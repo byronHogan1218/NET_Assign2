@@ -12,7 +12,8 @@ namespace BigBadBolts_Assign2
     * Created by Byron. 
     */
     public class Post : IComparable
-    {
+    { //Posts: Locked | ID | AuthorID | Title | Content | SubredditID | UpVotes | DownVotes | Weight | Year | Month | Day | Hour | Min | Sec
+        private bool locked;
         private readonly uint postID;
         private string title;
         private readonly uint authorID;
@@ -27,6 +28,7 @@ namespace BigBadBolts_Assign2
         /////////CONSTRUCTOR ZONE////////////////////////////////////////////////////////
         public Post() //DEFAULT CONSTRUCTOR....may need some tweaks
         {
+            locked = false;
             postID = (uint)RedditForm.myPosts.Count + 1;
             title = "";
             authorID = 0;
@@ -39,8 +41,9 @@ namespace BigBadBolts_Assign2
             postComments = RedditForm.myComments;
         }
         //This is used to create a new post
-        public Post(uint _postID, uint _authorID, string _title, string _postContent, uint _subHome, uint _upVotes, uint _downVotes, uint _weight, DateTime _timeStamp)
+        public Post(bool _locked, uint _postID, uint _authorID, string _title, string _postContent, uint _subHome, uint _upVotes, uint _downVotes, uint _weight, DateTime _timeStamp)
         {
+            locked = _locked;
             postID = _postID;
             title = _title;
             authorID = _authorID;
@@ -87,6 +90,10 @@ namespace BigBadBolts_Assign2
             get { return postID; }
         }
 
+        public bool Locked
+        {
+            get { return locked; }
+        }
 
         public uint Score
         {
