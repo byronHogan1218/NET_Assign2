@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigBadBolts_Assign2", "BigBadBolts_Assign2\BigBadBolts_Assign2.csproj", "{B52D0B6C-BF53-40E7-BFC8-C9ED22D3A4CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B52D0B6C-BF53-40E7-BFC8-C9ED22D3A4CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B52D0B6C-BF53-40E7-BFC8-C9ED22D3A4CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B52D0B6C-BF53-40E7-BFC8-C9ED22D3A4CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B52D0B6C-BF53-40E7-BFC8-C9ED22D3A4CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1EA2859B-60F5-4E01-B70B-A5FE91472671}
+	EndGlobalSection
+EndGlobal
