@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BigBadBolts_Assign2
 {
-    class Class1
+    class Assign1_Reference
     {
     }
 }

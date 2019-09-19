@@ -65,21 +65,21 @@ namespace BigBadBolts_Assign2
         //defult constructor
         public Subreddit()
         {
-            id = (uint)mySubReddits.Count + 1;
+            id = (uint)RedditForm.mySubReddits.Count + 1;
             name = "";
             members = 0;
             active = 0;
-            subPosts = myPosts;
+            subPosts = RedditForm.myPosts;
         }
 
         //constructor to create new subreddit
         public Subreddit(string conName)
         {
-            id = (uint)mySubReddits.Count + 1;//A somewhat unique identifier
+            id = (uint)RedditForm.mySubReddits.Count + 1;//A somewhat unique identifier
             name = conName;
             members = 0;
             active = 0;
-            subPosts = myPosts;
+            subPosts = RedditForm.myPosts;
         }
 
         //constructor for input file
@@ -89,7 +89,7 @@ namespace BigBadBolts_Assign2
             name = conName;
             members = conMembers;
             active = conActive;
-            subPosts = myPosts;
+            subPosts = RedditForm.myPosts;
         }
 
         public int CompareTo(Object alpha)

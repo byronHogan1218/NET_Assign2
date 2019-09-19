@@ -18,10 +18,10 @@ namespace BigBadBolts_Assign2
         };
 
         /**
-   * This is the definition of the foul language exception
-   * 
-   * returns:  A string indicationg that a FLE occured
-   */
+         * This is the definition of the foul language exception
+         * 
+         * returns:  A string indicationg that a FLE occured
+         */
         public class FoulLanguageException : Exception
         {
             public override string ToString()
@@ -61,26 +61,39 @@ namespace BigBadBolts_Assign2
             string[] tokens;
 
             //This will read the post file and build the objects from there
-            using (StreamReader inFile = new StreamReader("..//..//..//posts.txt"))
+            using (StreamReader inFile = new StreamReader("..//..//posts.txt"))
             {
+                bool Locked;
                 currentLine = inFile.ReadLine(); //prime the read
                 while (currentLine != null)
                 {
                     tokens = currentLine.Split('\t');
 
-                    string dateString = tokens[8] + '-' + tokens[9] + '-' + tokens[10] + ' ' + tokens[11] + ':' + tokens[12] + ':' + tokens[13];
+                    if ( tokens[0] == "0")
+                    {
+                        Locked = false;
+                    }
+                    else
+                    {
+                        Locked = true;
+                    }
+                    //File structure
+                    //Posts: Locked | ID | AuthorID | Title | Content | SubredditID | UpVotes | DownVotes | Weight | Year | Month | Day | Hour | Min | Sec
+
+                    string dateString = tokens[9] + '-' + tokens[10] + '-' + tokens[11] + ' ' + tokens[12] + ':' + tokens[13] + ':' + tokens[14];
                     DateTime temp;
                     if (DateTime.TryParse(dateString, out temp))//Makes sure the date converted successfully
                     {
                         Post postToAdd = new Post(//build the post to add
-                            UInt32.Parse(tokens[0]),//postId
-                            UInt32.Parse(tokens[1]),//authorID
-                            tokens[2],//title
-                            tokens[3],//postContent
-                            UInt32.Parse(tokens[4]),//subHome
-                            UInt32.Parse(tokens[5]),//upvotes
-                            UInt32.Parse(tokens[6]),//downVotes
-                            UInt32.Parse(tokens[7]),//weight
+                            Locked,//locked
+                            UInt32.Parse(tokens[1]),//postId
+                            UInt32.Parse(tokens[2]),//authorID
+                            tokens[3],//title
+                            tokens[4],//postContent
+                            UInt32.Parse(tokens[5]),//subHome
+                            UInt32.Parse(tokens[6]),//upvotes
+                            UInt32.Parse(tokens[7]),//downVotes
+                            UInt32.Parse(tokens[8]),//weight
                             temp//dateTime
                             );
 
@@ -96,7 +109,7 @@ namespace BigBadBolts_Assign2
             }
 
             //This will read the comment file and build the objects from there
-            using (StreamReader inFile = new StreamReader("..//..//..//comments.txt"))
+            using (StreamReader inFile = new StreamReader("..//..//comments.txt"))
             {
                 currentLine = inFile.ReadLine(); //prime the read
                 while (currentLine != null)
@@ -129,7 +142,7 @@ namespace BigBadBolts_Assign2
             }
 
             //This will read the the subreddit file and build the objects from them
-            using (StreamReader inFile = new StreamReader("..//..//..//subreddits.txt"))
+            using (StreamReader inFile = new StreamReader("..//..//subreddits.txt"))
             {
                 currentLine = inFile.ReadLine(); //prime the read
                 while (currentLine != null)
@@ -150,13 +163,13 @@ namespace BigBadBolts_Assign2
             }
 
             //This will get the user information and store it in the user object
-            using (StreamReader inFile = new StreamReader("..//..//..//users.txt"))
+            using (StreamReader inFile = new StreamReader("..//..//users.txt"))
             {
                 currentLine = inFile.ReadLine(); //prime the read
                 while (currentLine != null)
                 {
                     tokens = currentLine.Split('\t');
-
+                    /* Need to update to the updated user structure
                     User newUser = new User(//build the user
                       UInt32.Parse(tokens[0]),//id
                       tokens[1],//name
@@ -165,6 +178,7 @@ namespace BigBadBolts_Assign2
                     );
 
                     myUsers.Add(newUser);
+                    */
                     currentLine = inFile.ReadLine(); //get the next line
                 }
             }
