@@ -46,14 +46,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Class1.cs" />
+    <Compile Include="Comment.cs" />
+    <Compile Include="HelperFunctions.cs" />
+    <Compile Include="Post.cs" />
+    <Compile Include="Subreddit.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="RedditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="RedditForm.Designer.cs">
+      <DependentUpon>RedditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="RedditForm.resx">
+      <DependentUpon>RedditForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -75,6 +84,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="comments.txt" />
+    <Content Include="posts.txt" />
+    <Content Include="subreddits.txt" />
+    <Content Include="users.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
