@@ -51,6 +51,7 @@ namespace BigBadBolts_Assign2
             upVotes = 0;
             downVotes = 0;
             timeStamp = DateTime.Now;
+   
             commentReplies = RedditForm.myComments;
             indentLevel = 0;
             foreach (Comment tabs in RedditForm.myComments)
@@ -128,33 +129,87 @@ namespace BigBadBolts_Assign2
             foreach (User item in RedditForm.myUsers)
             {
                 if (item.Id == this.authorID)
+                {
                     authorName = item.Name;
+                    break;
+                }
             }
             if (authorName.Length == 0)
                 authorName = this.authorID.ToString();
-            string replies = "\n";
-            string replyAuthorName = "";
-            foreach (Comment reply in this.commentReplies)
+            int count = 0;
+            return "<" + this.CommentID + "> (" + this.Score + ") " + this.content + " - " + authorName + "|" + this.timeStamp.ToString(); // + PrintReplies(count + 1, this.commentID) ;
+            
+        }
+      
+
+        private string PrintReplies(int _count, uint parentID)
+        {
+            string tabsToAppend = "";
+            string authorName = "";
+
+
+            foreach (Comment reply in RedditForm.myComments)
             {
-                for (int i = 0; i < this.indentLevel; ++i)
+                if (parentID == reply.parentID)//we have a reply
                 {
-                    replies = replies + '\t';
+                    foreach (User item in RedditForm.myUsers)
+                    {
+                        if (item.Id == reply.authorID)
+                        {
+                            authorName = item.Name;
+                            break;
+                        }
+                    }
+                    if (authorName.Length == 0)
+                        authorName = reply.authorID.ToString();
+
+                    for (int i = 0; i < _count; ++i)
+                    {
+                        tabsToAppend += '\t';
+                    }
+
+                    return Environment.NewLine + '\t' + "<" + reply.CommentID + "> (" + reply.Score + ") " + reply.content + " - " + authorName + "|" + reply.timeStamp.ToString() + "\n";
+
                 }
-                foreach (User item in RedditForm.myUsers)
+                else //no reply found this run
                 {
-                    if (item.Id == reply.authorID)
-                        replyAuthorName = item.Name;
+                   //do nothing
                 }
-                if (replyAuthorName.Length == 0)
-                    replyAuthorName = reply.authorID.ToString();
-                replies = replies + "\t<" + reply.CommentID + "> (" + reply.Score + ") " + reply.content + " - " + replyAuthorName + "|" + reply.timeStamp.ToString() + "|";
-                replies = replies + '\n';
             }
-            replies = ""; //NOT WORKING
-            return "\t<" + this.CommentID + "> (" + this.Score + ") " + this.content + " - " + authorName + "|" + this.timeStamp.ToString() + "|" + replies;
+    
+            return "";
+            /*
+              if (parentID == reply.parentID)//we have a reply
+                { 
+                    return PrintReplies(_count + 1, reply.commentID);
+                }
+                else //no reply found this run
+                { 
+                    foreach (User item in RedditForm.myUsers)
+                    {
+                        if (item.Id == reply.authorID)
+                        {
+                            authorName = item.Name;
+                            break;
+                        }
+                    }
+                    if (authorName.Length == 0)
+                        authorName = reply.authorID.ToString();
+
+                    for (int i = 0;i < _count; ++i)
+                    {
+                        tabsToAppend += '\t';
+                    }
+                    
+                    return Environment.NewLine + tabsToAppend + "<" + reply.CommentID + "> (" + reply.Score + ") " + reply.content + " - " + authorName + "|" + reply.timeStamp.ToString() + "\n";
+                }
+                */
+            
         }
 
     }//End comment class
+
+
 
     /** Collection of Comment objects. This class
      * implements IEnumerable so that it can be used

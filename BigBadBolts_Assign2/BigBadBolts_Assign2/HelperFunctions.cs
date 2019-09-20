@@ -48,6 +48,21 @@ namespace BigBadBolts_Assign2
             return false;
         }
 
+        public static string getBetween(string strSource, string strStart, string strEnd)
+        {
+            int Start, End;
+            if (strSource.Contains(strStart) && strSource.Contains(strEnd))
+            {
+                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
+                End = strSource.IndexOf(strEnd, Start);
+                return strSource.Substring(Start, End - Start);
+            }
+            else
+            {
+                //"getBetween error");
+                return "";
+            }
+        }
         /**
          * This function gets and reads input from files provided to us. 
          * Parameters: myPosts- a SortedSet of post objects to fill with post info

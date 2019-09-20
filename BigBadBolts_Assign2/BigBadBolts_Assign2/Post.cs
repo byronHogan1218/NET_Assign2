@@ -75,6 +75,10 @@ namespace BigBadBolts_Assign2
             get { return authorID; }
         }
 
+        public uint SubHome
+        {
+            get { return subHome; }
+        }
 
 
         public SortedSet<Comment> PostComments
@@ -218,7 +222,7 @@ namespace BigBadBolts_Assign2
                 }
             }
 
-            return "\t<" + this.PostID + "> [" + this.subHome + "] (" + this.Score + ") " + this.Title + " " + this.postContent + " - " + authorName + "|" + this.timeStamp.ToString() + "|" + commentsOnPost;
+            return "<" + this.PostID + "> [" + this.subHome + "] (" + this.Score + ") " + this.Title + " " + this.postContent + " - " + authorName + "|" + this.timeStamp.ToString() + "|" + commentsOnPost;
         }
     }//End post class
 
