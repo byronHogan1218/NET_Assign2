@@ -20,17 +20,29 @@ namespace BigBadBolts_Assign2
         static public SortedSet<Subreddit> mySubReddits = new SortedSet<Subreddit>();
         static public SortedSet<User> myUsers = new SortedSet<User>();
 
+
         public RedditForm()
         {
             //Read the input files here to build the objects
             HelperFunctions.getFileInput(myPosts, myComments, mySubReddits, myUsers);
+            InitializeComponent(); //This needs to be towards the top of the program!!!
 
-            InitializeComponent();
+            foreach (User user in myUsers) //populate the user listBox
+            {
+                userListBox.Items.Add(user.ToString());
+            }
+
+            foreach (Subreddit sub in mySubReddits) //populate the subreddit listBox
+            {
+                subredditListBox.Items.Add(sub.ToString());
+            }
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
+
     }
 }

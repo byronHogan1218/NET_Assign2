@@ -165,20 +165,31 @@ namespace BigBadBolts_Assign2
             //This will get the user information and store it in the user object
             using (StreamReader inFile = new StreamReader("..//..//users.txt"))
             {
-                currentLine = inFile.ReadLine(); //prime the read
+            //Users: ID | UserType | Name | PasswordHash | PostScore | CommentScore | ModeratingSubs *
+            currentLine = inFile.ReadLine(); //prime the read
                 while (currentLine != null)
                 {
                     tokens = currentLine.Split('\t');
-                    /* Need to update to the updated user structure
+
+                    List<string> moderating = new List<string>();
+
+                    for (int i = 7; i < tokens.Length; ++i)
+                    {
+                        moderating.Add(tokens[i]);
+                    }
+
                     User newUser = new User(//build the user
                       UInt32.Parse(tokens[0]),//id
-                      tokens[1],//name
-                      Int32.Parse(tokens[2]), //postScore
-                      Int32.Parse(tokens[3]) //commentScore
+                      Int32.Parse(tokens[1]),//user type
+                      tokens[2],//name
+                      tokens[3],//password hash
+                      Int32.Parse(tokens[4]), //postScore
+                      Int32.Parse(tokens[5]), //commentScore
+                      moderating //list of the moderating subs names
                     );
 
-                    myUsers.Add(newUser);
-                    */
+                    RedditForm.myUsers.Add(newUser);
+                    
                     currentLine = inFile.ReadLine(); //get the next line
                 }
             }
