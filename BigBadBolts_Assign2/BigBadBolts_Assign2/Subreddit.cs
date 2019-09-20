@@ -107,7 +107,7 @@ namespace BigBadBolts_Assign2
 
         public override string ToString()
         {
-            return '\t' + "<" + this.id + "> " + this.name + " -- (" + this.active + "/" + this.members + ")";
+            return "<" + this.id + "> " + this.name + " -- (" + this.active + "/" + this.members + ")";
         }
 
     }
