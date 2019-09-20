@@ -32,6 +32,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.userListBox = new System.Windows.Forms.ListBox();
+            this.loginBtn = new System.Windows.Forms.Button();
+            this.systemOutListBox = new System.Windows.Forms.ListBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // subredditListBox
@@ -68,11 +71,41 @@
             this.userListBox.Size = new System.Drawing.Size(120, 95);
             this.userListBox.TabIndex = 3;
             // 
+            // loginBtn
+            // 
+            this.loginBtn.Location = new System.Drawing.Point(97, 170);
+            this.loginBtn.Name = "loginBtn";
+            this.loginBtn.Size = new System.Drawing.Size(75, 23);
+            this.loginBtn.TabIndex = 4;
+            this.loginBtn.Text = "Login";
+            this.loginBtn.UseVisualStyleBackColor = true;
+            this.loginBtn.Click += new System.EventHandler(this.LoginBtn_Click);
+            // 
+            // systemOutListBox
+            // 
+            this.systemOutListBox.FormattingEnabled = true;
+            this.systemOutListBox.Location = new System.Drawing.Point(40, 309);
+            this.systemOutListBox.Name = "systemOutListBox";
+            this.systemOutListBox.Size = new System.Drawing.Size(629, 108);
+            this.systemOutListBox.TabIndex = 5;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(48, 293);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(76, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "System Output";
+            // 
             // RedditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.systemOutListBox);
+            this.Controls.Add(this.loginBtn);
             this.Controls.Add(this.userListBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -91,6 +124,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ListBox userListBox;
+        private System.Windows.Forms.Button loginBtn;
+        private System.Windows.Forms.ListBox systemOutListBox;
+        private System.Windows.Forms.Label label3;
     }
 }
 
