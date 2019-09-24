@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Security.Cryptography;
 
 namespace BigBadBolts_Assign2
 {
@@ -17,7 +18,7 @@ namespace BigBadBolts_Assign2
         static public Nullable<uint> currentUserID;
         static public bool authenticated = false;
         static public SortedSet<Post> myPosts = new SortedSet<Post>();
-         public SortedSet<Comment> myComments = new SortedSet<Comment>();
+        static public SortedSet<Comment> myComments = new SortedSet<Comment>();
         static public SortedSet<Comment> myCommentsReplies = new SortedSet<Comment>();
         static public SortedSet<Subreddit> mySubReddits = new SortedSet<Subreddit>();
         static public SortedSet<User> myUsers = new SortedSet<User>();
@@ -53,7 +54,13 @@ namespace BigBadBolts_Assign2
                 systemOutListBox.Items.Add("Please select a user to login as.");
                 return;
             }
+            /*
+            label7.Text = passwordTextBox.Text;
 
+            string password = "";
+            byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(password);
+            string hexString = byteArray.ToHex(false);
+            */
             Button login = sender as Button;
 
             if (login.Text == "Login") //this is to login
@@ -212,6 +219,33 @@ namespace BigBadBolts_Assign2
             {
                 return;
             }
+        }
+
+        private void PasswordTextBox_TextChanged(object sender, EventArgs e)
+        {
+            //still need to get hash conversion to work
+            //still need to get comparator to check if password is correct
+            //the two textboxes in the bottom right im using to test strings
+
+            passwordOutTest.Text = passwordTextBox.Text;
+
+            string password = passwordTextBox.Text;
+
+            //MD5 md5Hash = MD5.Create();
+            using (MD5 md5Hash = MD5.Create())
+            {
+               string hash = GetMd5Hash(md5Hash, password);
+
+                hexTest.Text = hash;
+
+                if(VerifyMd5Hash(md5Hash, password, hash))
+                {
+                    systemOutListBox.Items.Add("password is right");
+                }
+                else
+                    systemOutListBox.Items.Add("password is not right");
+            }
+
         }
     }
 }
