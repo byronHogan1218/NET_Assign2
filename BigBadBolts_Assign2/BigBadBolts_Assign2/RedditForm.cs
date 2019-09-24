@@ -17,7 +17,7 @@ namespace BigBadBolts_Assign2
         static public Nullable<uint> currentUserID;
         static public bool authenticated = false;
         static public SortedSet<Post> myPosts = new SortedSet<Post>();
-         public SortedSet<Comment> myComments = new SortedSet<Comment>();
+        static public SortedSet<Comment> myComments = new SortedSet<Comment>();
         static public SortedSet<Comment> myCommentsReplies = new SortedSet<Comment>();
         static public SortedSet<Subreddit> mySubReddits = new SortedSet<Subreddit>();
         static public SortedSet<User> myUsers = new SortedSet<User>();
@@ -148,11 +148,14 @@ namespace BigBadBolts_Assign2
 
         private void AddReplyBtn_Click(object sender, EventArgs e)
         {
+            string content = "";
+            uint ID = 0;
             if (currentUserID != null)//Make sure user logged in
             {
                 if (addReplyTextBox.TextLength > 0) //make sure words are present
                 {
-                    if (true)//make sure the comment has something listed
+                    systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
+                    if (commentListBox.SelectedIndex != -1)//make sure the comment has something listed
                     { 
                         uint commentToReplyID;
                         try { 
@@ -164,13 +167,15 @@ namespace BigBadBolts_Assign2
 
                         }
                         systemOutListBox.Items.Add(commentToReplyID.ToString());
-                        string content = "";
-                        uint ID = 0;
+                  
                         foreach (Comment commentToReply in myComments) //Search for the comment to reply to
                         {
+                            systemOutListBox.Items.Add("Two things being compared " + commentToReply.CommentID + "-----" + commentToReplyID);
                             if (commentToReply.CommentID == commentToReplyID)//Found the comment to reply to
                             {
-                                string commentContent = commentListBox.SelectedItem.ToString();
+                                systemOutListBox.Items.Add("*************************************************");
+                                string commentContent = addReplyTextBox.Text;
+                                systemOutListBox.Items.Add(addReplyTextBox.Text + "This is the text");
                                 try
                                 {
                                     if (HelperFunctions.vulgarityChecker(commentContent))
@@ -186,25 +191,69 @@ namespace BigBadBolts_Assign2
                                 }
                                 content = commentContent;
                                 ID = commentToReply.CommentID;
-                                //Comment replyToAdd = new Comment(
-                                //    commentContent, //content
-                                //    (uint)currentUserID, //authorID //THIS IS ROGNESS USER
-                                //    commentToReply.CommentID //parentID
-                                //    );
-                                systemOutListBox.Items.Add("MAKE IT HERE?");
-                                //myComments.Add(replyToAdd);
-                                //commentListBox.Items.Add(replyToAdd.ToString());
                                 addReplyTextBox.Text = "";
                             }
                         }
-                        Comment replyToAdd = new Comment(
-                                content, //content
-                                (uint)currentUserID, //authorID //THIS IS ROGNESS USER
-                                ID //parentID
-                            );
-                        myComments.Add(replyToAdd);
-                        commentListBox.Items.Add(replyToAdd.ToString());
+                        ////Comment replyToAdd = new Comment(
+                        ////        content, //content
+                        ////        (uint)currentUserID, //authorID //THIS IS ROGNESS USER
+                        ////        ID //parentID
+                        ////    );
+                        ////systemOutListBox.Items.Add(replyToAdd.Content + "WORDS");
+
+                        ////if (myComments.Add(replyToAdd))
+                        ////    systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
+                        ////else
+                        ////    systemOutListBox.Items.Add("NONONONONO");
+
+                        ////commentListBox.Items.Add(replyToAdd.ToString());
                     }
+                    else // Not selected comment, add to post
+                    {
+                        foreach (Post post in myPosts)
+                        {
+                            if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))
+                            {
+                                string commentContent = addReplyTextBox.Text;
+                                systemOutListBox.Items.Add(addReplyTextBox.Text + "This is the text");
+                                try
+                                {
+                                    if (HelperFunctions.vulgarityChecker(commentContent))
+                                    {
+                                        throw new HelperFunctions.FoulLanguageException();
+                                    }
+                                }
+                                catch (HelperFunctions.FoulLanguageException fle)
+                                {
+
+                                    MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
+                                    return;
+                                }
+                                content = commentContent;
+                                ID = post.PostID;
+                                addReplyTextBox.Text = "";
+                                break;
+                            }
+                        }
+
+
+                    }
+                    Comment replyToAdd = new Comment(
+                               content, //content
+                               (uint)currentUserID, //authorID //THIS IS ROGNESS USER
+                               ID //parentID
+                           );
+                    systemOutListBox.Items.Add(replyToAdd.Content + "WORDS");
+
+                    if (myComments.Add(replyToAdd))
+                        systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
+                    else
+                        systemOutListBox.Items.Add("NONONONONO");
+
+                    commentListBox.Items.Add(replyToAdd.ToString());
+
+
+
 
                 }
             }
