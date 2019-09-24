@@ -31,6 +31,7 @@ namespace BigBadBolts_Assign2
             InitializeComponent(); //This needs to be towards the top of the program!!!
 
             LoadTables();
+            ToggleSubLabels(false);
         }
 
         private void LoadTables()
@@ -88,12 +89,21 @@ namespace BigBadBolts_Assign2
             }
         }
 
-        private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void ToggleSubLabels(bool status)
+        {
+            membersNumberLabel.Visible = status;
+            membersTileLabel.Visible = status;
+            activeNumberLabel.Visible = status;
+            activeTitleLabel.Visible = status;
+        }
+
+        public void LoadPosts()
         {
             postListBox.Items.Clear();//clear out anything that might have been in it before
             uint subIDToView = 0;
             if ((string)subredditListBox.SelectedItem == "all") //determines if all the posts should be displayed
             {
+                ToggleSubLabels(false);
                 foreach (Post post in myPosts)//display all the posts
                 {
                     postListBox.Items.Add(post.ToString());
@@ -107,10 +117,16 @@ namespace BigBadBolts_Assign2
                     if ((string)subredditListBox.SelectedItem == sub.Name) //Found the subbreddit
                     {
                         subIDToView = sub.Id;
+
+                        ToggleSubLabels(true);
+                        membersNumberLabel.Text = sub.Members.ToString();
+                        activeNumberLabel.Text = sub.Active.ToString();
+
                         break;
                     }
                 }
                 systemOutListBox.Items.Add("We are getting the posts for subbreddit '" + subIDToView + "'");
+
 
                 foreach (Post subPost in myPosts) // Display all the posts that have the subReddit as its parent
                 {
@@ -122,9 +138,8 @@ namespace BigBadBolts_Assign2
             }
         }
 
-        private void PostListBox_SelectedIndexChanged(object sender, EventArgs e)
+        public void LoadComments()
         {
-            addReplyTextBox.Enabled = true;
             commentListBox.Items.Clear();//clear out anything that might have been in it before
             uint postIDToView = UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">"));
 
@@ -150,7 +165,32 @@ namespace BigBadBolts_Assign2
 
                 }
             }
-            systemOutListBox.Items.Add("We are getting the comment for post '" + postIDToView + "'");
+        }
+
+        private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            deleteCommentBtn.Enabled = false;
+            deletePostBtn.Enabled = false;
+            commentListBox.Items.Clear();
+            addReplyTextBox.Text = "";
+            addReplyTextBox.Enabled = false;
+            addReplyBtn.Enabled = false;
+            if (subredditListBox.SelectedIndex == -1)//nothing is selected in the subreddits list box
+            {
+                ToggleSubLabels(false);
+            }
+
+            LoadPosts();
+        }
+
+        private void PostListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            deleteCommentBtn.Enabled = false;
+            deletePostBtn.Enabled = true;
+            addReplyTextBox.Enabled = true;
+            addReplyBtn.Enabled = true;
+            LoadComments();
+            systemOutListBox.Items.Add("We are getting the comment for post '" + UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">")) + "'");
         }
 
         private void AddReplyBtn_Click(object sender, EventArgs e)
@@ -282,7 +322,7 @@ namespace BigBadBolts_Assign2
 
             //MD5 md5Hash = MD5.Create();
             using (MD5 md5Hash = MD5.Create())
-            { //commented out the following block so i can still build it
+            { 
                 
                string hash = HelperFunctions.GetMd5Hash(md5Hash, password);
 
@@ -297,6 +337,82 @@ namespace BigBadBolts_Assign2
                     
             }
 
+        }
+
+        private void DeletePostBtn_Click(object sender, EventArgs e)
+        {
+            if (postListBox.SelectedIndex == -1)//Nothing is selected to delete
+            {
+                MessageBox.Show("Please select a post to delete.");
+                return;
+            }
+            foreach (Post post in myPosts)//search through the posts to find the one to delete.
+            {
+                if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))//found the selected post
+                {
+                    //if(superUser) { } must implemet this
+                    if (post.PostAuthorId == currentUserID) //the correct logged in user is trying to delete
+                    {
+                        if (myPosts.Remove(post))//check to make sure it deleted correctly
+                        {
+                            deleteCommentBtn.Enabled = false;
+                            commentListBox.Items.Clear();
+                            addReplyTextBox.Enabled = false;
+                            addReplyBtn.Enabled = false;
+                            LoadPosts();//refresh the data in the table
+                            systemOutListBox.Items.Add("Successfully deleted the post.");
+                            return;
+                        }
+                        else
+                            systemOutListBox.Items.Add("Tried to delete, but something went wrong.");
+
+                    }
+                    else //either no user or access not allowed
+                    {
+                        MessageBox.Show("You do not have permission to delete this post");
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void DeleteCommentBtn_Click(object sender, EventArgs e)
+        {
+            if(commentListBox.SelectedIndex == -1)//nothing is selected
+            {
+                MessageBox.Show("Please select a comment to delete.");
+                return;
+            }
+            foreach (Comment comment in myComments)//search through the comments to find the one to delete.
+            {
+                if (comment.CommentID == UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">")))//found the selected comment
+                {
+                    //if(superUser) { } must implemet this
+                    if (comment.CommentAuthorId == currentUserID) //the correct logged in user is trying to delete
+                    {
+                        if (myComments.Remove(comment))//check to make sure it deleted correctly
+                        {
+                            
+                            LoadComments();//refresh the data in the table
+                            systemOutListBox.Items.Add("Successfully deleted the comment.");
+                            return;
+                        }
+                        else
+                            systemOutListBox.Items.Add("Tried to delete, but something went wrong.");
+
+                    }
+                    else //either no user or access not allowed
+                    {
+                        MessageBox.Show("You do not have permission to delete this post");
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void CommentListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            deleteCommentBtn.Enabled = true;
         }
     }
 }

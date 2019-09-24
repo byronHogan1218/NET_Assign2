@@ -11,7 +11,7 @@ namespace BigBadBolts_Assign2
 {
     static class HelperFunctions
     {
-        static string GetMd5Hash(MD5 md5Hash, string input)
+        static public string GetMd5Hash(MD5 md5Hash, string input)
         {
             byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
             StringBuilder sBuilder = new StringBuilder();
@@ -24,7 +24,7 @@ namespace BigBadBolts_Assign2
             return sBuilder.ToString();
         }
 
-        static bool VerifyMd5Hash(MD5 md5Hash, string input, string hash)
+        static public bool VerifyMd5Hash(MD5 md5Hash, string input, string hash)
         {
             string hashOfInput = GetMd5Hash (md5Hash, input);
             StringComparer comparer = StringComparer.OrdinalIgnoreCase;
