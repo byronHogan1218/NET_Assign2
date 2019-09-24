@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Security.Cryptography;
 
 namespace BigBadBolts_Assign2
 {
@@ -17,7 +18,7 @@ namespace BigBadBolts_Assign2
         static public Nullable<uint> currentUserID;
         static public bool authenticated = false;
         static public SortedSet<Post> myPosts = new SortedSet<Post>();
-         public SortedSet<Comment> myComments = new SortedSet<Comment>();
+        static public SortedSet<Comment> myComments = new SortedSet<Comment>();
         static public SortedSet<Comment> myCommentsReplies = new SortedSet<Comment>();
         static public SortedSet<Subreddit> mySubReddits = new SortedSet<Subreddit>();
         static public SortedSet<User> myUsers = new SortedSet<User>();
@@ -30,6 +31,7 @@ namespace BigBadBolts_Assign2
             InitializeComponent(); //This needs to be towards the top of the program!!!
 
             LoadTables();
+            ToggleSubLabels(false);
         }
 
         private void LoadTables()
@@ -53,7 +55,13 @@ namespace BigBadBolts_Assign2
                 systemOutListBox.Items.Add("Please select a user to login as.");
                 return;
             }
+            /*
+            label7.Text = passwordTextBox.Text;
 
+            string password = "";
+            byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(password);
+            string hexString = byteArray.ToHex(false);
+            */
             Button login = sender as Button;
 
             if (login.Text == "Login") //this is to login
@@ -81,12 +89,21 @@ namespace BigBadBolts_Assign2
             }
         }
 
-        private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void ToggleSubLabels(bool status)
+        {
+            membersNumberLabel.Visible = status;
+            membersTileLabel.Visible = status;
+            activeNumberLabel.Visible = status;
+            activeTitleLabel.Visible = status;
+        }
+
+        public void LoadPosts()
         {
             postListBox.Items.Clear();//clear out anything that might have been in it before
             uint subIDToView = 0;
             if ((string)subredditListBox.SelectedItem == "all") //determines if all the posts should be displayed
             {
+                ToggleSubLabels(false);
                 foreach (Post post in myPosts)//display all the posts
                 {
                     postListBox.Items.Add(post.ToString());
@@ -100,10 +117,16 @@ namespace BigBadBolts_Assign2
                     if ((string)subredditListBox.SelectedItem == sub.Name) //Found the subbreddit
                     {
                         subIDToView = sub.Id;
+
+                        ToggleSubLabels(true);
+                        membersNumberLabel.Text = sub.Members.ToString();
+                        activeNumberLabel.Text = sub.Active.ToString();
+
                         break;
                     }
                 }
                 systemOutListBox.Items.Add("We are getting the posts for subbreddit '" + subIDToView + "'");
+
 
                 foreach (Post subPost in myPosts) // Display all the posts that have the subReddit as its parent
                 {
@@ -115,9 +138,8 @@ namespace BigBadBolts_Assign2
             }
         }
 
-        private void PostListBox_SelectedIndexChanged(object sender, EventArgs e)
+        public void LoadComments()
         {
-            addReplyTextBox.Enabled = true;
             commentListBox.Items.Clear();//clear out anything that might have been in it before
             uint postIDToView = UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">"));
 
@@ -143,16 +165,44 @@ namespace BigBadBolts_Assign2
 
                 }
             }
-            systemOutListBox.Items.Add("We are getting the comment for post '" + postIDToView + "'");
+        }
+
+        private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            deleteCommentBtn.Enabled = false;
+            deletePostBtn.Enabled = false;
+            commentListBox.Items.Clear();
+            addReplyTextBox.Text = "";
+            addReplyTextBox.Enabled = false;
+            addReplyBtn.Enabled = false;
+            if (subredditListBox.SelectedIndex == -1)//nothing is selected in the subreddits list box
+            {
+                ToggleSubLabels(false);
+            }
+
+            LoadPosts();
+        }
+
+        private void PostListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            deleteCommentBtn.Enabled = false;
+            deletePostBtn.Enabled = true;
+            addReplyTextBox.Enabled = true;
+            addReplyBtn.Enabled = true;
+            LoadComments();
+            systemOutListBox.Items.Add("We are getting the comment for post '" + UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">")) + "'");
         }
 
         private void AddReplyBtn_Click(object sender, EventArgs e)
         {
+            string content = "";
+            uint ID = 0;
             if (currentUserID != null)//Make sure user logged in
             {
                 if (addReplyTextBox.TextLength > 0) //make sure words are present
                 {
-                    if (true)//make sure the comment has something listed
+                    systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
+                    if (commentListBox.SelectedIndex != -1)//make sure the comment has something listed
                     { 
                         uint commentToReplyID;
                         try { 
@@ -164,13 +214,15 @@ namespace BigBadBolts_Assign2
 
                         }
                         systemOutListBox.Items.Add(commentToReplyID.ToString());
-                        string content = "";
-                        uint ID = 0;
+                  
                         foreach (Comment commentToReply in myComments) //Search for the comment to reply to
                         {
+                            systemOutListBox.Items.Add("Two things being compared " + commentToReply.CommentID + "-----" + commentToReplyID);
                             if (commentToReply.CommentID == commentToReplyID)//Found the comment to reply to
                             {
-                                string commentContent = commentListBox.SelectedItem.ToString();
+                                systemOutListBox.Items.Add("*************************************************");
+                                string commentContent = addReplyTextBox.Text;
+                                systemOutListBox.Items.Add(addReplyTextBox.Text + "This is the text");
                                 try
                                 {
                                     if (HelperFunctions.vulgarityChecker(commentContent))
@@ -186,25 +238,69 @@ namespace BigBadBolts_Assign2
                                 }
                                 content = commentContent;
                                 ID = commentToReply.CommentID;
-                                //Comment replyToAdd = new Comment(
-                                //    commentContent, //content
-                                //    (uint)currentUserID, //authorID //THIS IS ROGNESS USER
-                                //    commentToReply.CommentID //parentID
-                                //    );
-                                systemOutListBox.Items.Add("MAKE IT HERE?");
-                                //myComments.Add(replyToAdd);
-                                //commentListBox.Items.Add(replyToAdd.ToString());
                                 addReplyTextBox.Text = "";
                             }
                         }
-                        Comment replyToAdd = new Comment(
-                                content, //content
-                                (uint)currentUserID, //authorID //THIS IS ROGNESS USER
-                                ID //parentID
-                            );
-                        myComments.Add(replyToAdd);
-                        commentListBox.Items.Add(replyToAdd.ToString());
+                        ////Comment replyToAdd = new Comment(
+                        ////        content, //content
+                        ////        (uint)currentUserID, //authorID //THIS IS ROGNESS USER
+                        ////        ID //parentID
+                        ////    );
+                        ////systemOutListBox.Items.Add(replyToAdd.Content + "WORDS");
+
+                        ////if (myComments.Add(replyToAdd))
+                        ////    systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
+                        ////else
+                        ////    systemOutListBox.Items.Add("NONONONONO");
+
+                        ////commentListBox.Items.Add(replyToAdd.ToString());
                     }
+                    else // Not selected comment, add to post
+                    {
+                        foreach (Post post in myPosts)
+                        {
+                            if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))
+                            {
+                                string commentContent = addReplyTextBox.Text;
+                                systemOutListBox.Items.Add(addReplyTextBox.Text + "This is the text");
+                                try
+                                {
+                                    if (HelperFunctions.vulgarityChecker(commentContent))
+                                    {
+                                        throw new HelperFunctions.FoulLanguageException();
+                                    }
+                                }
+                                catch (HelperFunctions.FoulLanguageException fle)
+                                {
+
+                                    MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
+                                    return;
+                                }
+                                content = commentContent;
+                                ID = post.PostID;
+                                addReplyTextBox.Text = "";
+                                break;
+                            }
+                        }
+
+
+                    }
+                    Comment replyToAdd = new Comment(
+                               content, //content
+                               (uint)currentUserID, //authorID 
+                               ID //parentID
+                           );
+                    systemOutListBox.Items.Add(replyToAdd.Content + "WORDS");
+
+                    if (myComments.Add(replyToAdd))
+                        systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
+                    else
+                        systemOutListBox.Items.Add("NONONONONO");
+
+                    commentListBox.Items.Add(replyToAdd.ToString());
+
+
+
 
                 }
             }
@@ -212,6 +308,111 @@ namespace BigBadBolts_Assign2
             {
                 return;
             }
+        }
+
+        private void PasswordTextBox_TextChanged(object sender, EventArgs e)
+        {
+            //still need to get hash conversion to work
+            //still need to get comparator to check if password is correct
+            //the two textboxes in the bottom right im using to test strings
+
+            passwordOutTest.Text = passwordTextBox.Text;
+
+            string password = passwordTextBox.Text;
+
+            //MD5 md5Hash = MD5.Create();
+            using (MD5 md5Hash = MD5.Create())
+            { 
+                
+               string hash = HelperFunctions.GetMd5Hash(md5Hash, password);
+
+                hexTest.Text = hash;
+
+                if(HelperFunctions.VerifyMd5Hash(md5Hash, password, hash))
+                {
+                    systemOutListBox.Items.Add("password is right");
+                }
+                else
+                    systemOutListBox.Items.Add("password is not right");
+                    
+            }
+
+        }
+
+        private void DeletePostBtn_Click(object sender, EventArgs e)
+        {
+            if (postListBox.SelectedIndex == -1)//Nothing is selected to delete
+            {
+                MessageBox.Show("Please select a post to delete.");
+                return;
+            }
+            foreach (Post post in myPosts)//search through the posts to find the one to delete.
+            {
+                if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))//found the selected post
+                {
+                    //if(superUser) { } must implemet this
+                    if (post.PostAuthorId == currentUserID) //the correct logged in user is trying to delete
+                    {
+                        if (myPosts.Remove(post))//check to make sure it deleted correctly
+                        {
+                            deleteCommentBtn.Enabled = false;
+                            commentListBox.Items.Clear();
+                            addReplyTextBox.Enabled = false;
+                            addReplyBtn.Enabled = false;
+                            LoadPosts();//refresh the data in the table
+                            systemOutListBox.Items.Add("Successfully deleted the post.");
+                            return;
+                        }
+                        else
+                            systemOutListBox.Items.Add("Tried to delete, but something went wrong.");
+
+                    }
+                    else //either no user or access not allowed
+                    {
+                        MessageBox.Show("You do not have permission to delete this post");
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void DeleteCommentBtn_Click(object sender, EventArgs e)
+        {
+            if(commentListBox.SelectedIndex == -1)//nothing is selected
+            {
+                MessageBox.Show("Please select a comment to delete.");
+                return;
+            }
+            foreach (Comment comment in myComments)//search through the comments to find the one to delete.
+            {
+                if (comment.CommentID == UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">")))//found the selected comment
+                {
+                    //if(superUser) { } must implemet this
+                    if (comment.CommentAuthorId == currentUserID) //the correct logged in user is trying to delete
+                    {
+                        if (myComments.Remove(comment))//check to make sure it deleted correctly
+                        {
+                            
+                            LoadComments();//refresh the data in the table
+                            systemOutListBox.Items.Add("Successfully deleted the comment.");
+                            return;
+                        }
+                        else
+                            systemOutListBox.Items.Add("Tried to delete, but something went wrong.");
+
+                    }
+                    else //either no user or access not allowed
+                    {
+                        MessageBox.Show("You do not have permission to delete this post");
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void CommentListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            deleteCommentBtn.Enabled = true;
         }
     }
 }

@@ -104,8 +104,10 @@ namespace BigBadBolts_Assign2
         ////////////////END CONSTREUCTOR ZONE///////////////////////////////////////////
 
 
-
-
+        public uint CommentAuthorId
+        {
+            get { return authorID; }
+        }
         public int CompareTo(Object aplha)
         {
             if (aplha == null)
