@@ -247,7 +247,7 @@ namespace BigBadBolts_Assign2
                     }
                     Comment replyToAdd = new Comment(
                                content, //content
-                               (uint)currentUserID, //authorID //THIS IS ROGNESS USER
+                               (uint)currentUserID, //authorID 
                                ID //parentID
                            );
                     systemOutListBox.Items.Add(replyToAdd.Content + "WORDS");
@@ -282,17 +282,19 @@ namespace BigBadBolts_Assign2
 
             //MD5 md5Hash = MD5.Create();
             using (MD5 md5Hash = MD5.Create())
-            {
-               string hash = GetMd5Hash(md5Hash, password);
+            { //commented out the following block so i can still build it
+                
+               string hash = HelperFunctions.GetMd5Hash(md5Hash, password);
 
                 hexTest.Text = hash;
 
-                if(VerifyMd5Hash(md5Hash, password, hash))
+                if(HelperFunctions.VerifyMd5Hash(md5Hash, password, hash))
                 {
                     systemOutListBox.Items.Add("password is right");
                 }
                 else
                     systemOutListBox.Items.Add("password is not right");
+                    
             }
 
         }
