@@ -88,6 +88,8 @@ namespace BigBadBolts_Assign2
                 return "";
             }
         }
+
+
         /**
          * This function gets and reads input from files provided to us. 
          * Parameters: myPosts- a SortedSet of post objects to fill with post info
@@ -137,7 +139,7 @@ namespace BigBadBolts_Assign2
                             temp//dateTime
                             );
 
-                        myPosts.Add(postToAdd);
+                        RedditForm.myPosts.Add(postToAdd);
                     }
                     else //We failed to conver the date
                     {
@@ -170,7 +172,7 @@ namespace BigBadBolts_Assign2
                             temp//dateTime
                             );
 
-                        myComments.Add(commentToAdd);
+                        RedditForm.myComments.Add(commentToAdd);
                     }
                     else
                     {

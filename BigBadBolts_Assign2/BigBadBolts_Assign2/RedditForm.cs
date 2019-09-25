@@ -19,7 +19,6 @@ namespace BigBadBolts_Assign2
         static public bool authenticated = false;
         static public SortedSet<Post> myPosts = new SortedSet<Post>();
         static public SortedSet<Comment> myComments = new SortedSet<Comment>();
-        static public SortedSet<Comment> myCommentsReplies = new SortedSet<Comment>();
         static public SortedSet<Subreddit> mySubReddits = new SortedSet<Subreddit>();
         static public SortedSet<User> myUsers = new SortedSet<User>();
 
@@ -86,6 +85,15 @@ namespace BigBadBolts_Assign2
                 authenticated = false;
                 userListBox.Enabled = true;
                 login.Text = "Login";
+                postListBox.Items.Clear();
+                commentListBox.Items.Clear();
+                addReplyBtn.Enabled = false;
+                addReplyTextBox.Text = "";
+                addReplyTextBox.Enabled = false;
+                ToggleSubLabels(false);
+                subredditListBox.ClearSelected();
+                deleteCommentBtn.Enabled = false;
+                deletePostBtn.Enabled = false;
             }
         }
 
@@ -165,6 +173,8 @@ namespace BigBadBolts_Assign2
 
                 }
             }
+            if (commentListBox.Items.Count == 0)
+                commentListBox.Items.Add("There are no comments to view.");
         }
 
         private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -186,9 +196,23 @@ namespace BigBadBolts_Assign2
         private void PostListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             deleteCommentBtn.Enabled = false;
+            addReplyTextBox.Text = "";
             deletePostBtn.Enabled = true;
             addReplyTextBox.Enabled = true;
             addReplyBtn.Enabled = true;
+            foreach (Post post in myPosts)
+            {
+                if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))
+                {
+                    if (post.Locked == true)
+                    {
+                        addReplyBtn.Enabled = false;
+                        addReplyTextBox.Text = "This post is locked and cannot be edited.";
+                        addReplyTextBox.Enabled = false;
+                    }
+                }
+            }
+         
             LoadComments();
             systemOutListBox.Items.Add("We are getting the comment for post '" + UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">")) + "'");
         }
@@ -197,118 +221,108 @@ namespace BigBadBolts_Assign2
         {
             string content = "";
             uint ID = 0;
-            if (currentUserID != null)//Make sure user logged in
+            if (currentUserID == null)//Make sure user logged in
             {
-                if (addReplyTextBox.TextLength > 0) //make sure words are present
-                {
-                    systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
-                    if (commentListBox.SelectedIndex != -1)//make sure the comment has something listed
-                    { 
-                        uint commentToReplyID;
-                        try { 
-                        commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">"));
-                        }
-                        catch (Exception ex)
-                        {
-                            commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">"));
-
-                        }
-                        systemOutListBox.Items.Add(commentToReplyID.ToString());
-                  
-                        foreach (Comment commentToReply in myComments) //Search for the comment to reply to
-                        {
-                            systemOutListBox.Items.Add("Two things being compared " + commentToReply.CommentID + "-----" + commentToReplyID);
-                            if (commentToReply.CommentID == commentToReplyID)//Found the comment to reply to
-                            {
-                                systemOutListBox.Items.Add("*************************************************");
-                                string commentContent = addReplyTextBox.Text;
-                                systemOutListBox.Items.Add(addReplyTextBox.Text + "This is the text");
-                                try
-                                {
-                                    if (HelperFunctions.vulgarityChecker(commentContent))
-                                    {
-                                        throw new HelperFunctions.FoulLanguageException();
-                                    }
-                                }
-                                catch (HelperFunctions.FoulLanguageException fle)
-                                {
-
-                                    MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
-                                    return;
-                                }
-                                content = commentContent;
-                                ID = commentToReply.CommentID;
-                                addReplyTextBox.Text = "";
-                            }
-                        }
-                        ////Comment replyToAdd = new Comment(
-                        ////        content, //content
-                        ////        (uint)currentUserID, //authorID //THIS IS ROGNESS USER
-                        ////        ID //parentID
-                        ////    );
-                        ////systemOutListBox.Items.Add(replyToAdd.Content + "WORDS");
-
-                        ////if (myComments.Add(replyToAdd))
-                        ////    systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
-                        ////else
-                        ////    systemOutListBox.Items.Add("NONONONONO");
-
-                        ////commentListBox.Items.Add(replyToAdd.ToString());
-                    }
-                    else // Not selected comment, add to post
-                    {
-                        foreach (Post post in myPosts)
-                        {
-                            if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))
-                            {
-                                string commentContent = addReplyTextBox.Text;
-                                systemOutListBox.Items.Add(addReplyTextBox.Text + "This is the text");
-                                try
-                                {
-                                    if (HelperFunctions.vulgarityChecker(commentContent))
-                                    {
-                                        throw new HelperFunctions.FoulLanguageException();
-                                    }
-                                }
-                                catch (HelperFunctions.FoulLanguageException fle)
-                                {
-
-                                    MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
-                                    return;
-                                }
-                                content = commentContent;
-                                ID = post.PostID;
-                                addReplyTextBox.Text = "";
-                                break;
-                            }
-                        }
-
-
-                    }
-                    Comment replyToAdd = new Comment(
-                               content, //content
-                               (uint)currentUserID, //authorID 
-                               ID //parentID
-                           );
-                    systemOutListBox.Items.Add(replyToAdd.Content + "WORDS");
-
-                    if (myComments.Add(replyToAdd))
-                        systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
-                    else
-                        systemOutListBox.Items.Add("NONONONONO");
-
-                    commentListBox.Items.Add(replyToAdd.ToString());
-
-
-
-
-                }
-            }
-            else//user not logged in
-            {
+                MessageBox.Show("Please log in to comment.");
                 return;
             }
+            if (addReplyTextBox.TextLength <= 0) //make sure words are present
+            {
+                MessageBox.Show("Please enter in a comment to add.");
+                return;
+            }
+          
+            
+
+            //SHOULD BE GOOD TO SAVE THE COMMENT
+
+           // systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
+            if (commentListBox.SelectedIndex != -1)//make sure the comment has something listed
+            { 
+                uint commentToReplyID;
+                try { 
+                commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">"));
+                }
+                catch (Exception ex)
+                {
+                    commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">"));
+
+                }
+                systemOutListBox.Items.Add(commentToReplyID.ToString());
+                  
+                foreach (Comment commentToReply in myComments) //Search for the comment to reply to
+                {
+                    if (commentToReply.CommentID == commentToReplyID)//Found the comment to reply to
+                    {
+                        string commentContent = addReplyTextBox.Text;
+                        try
+                        {
+                            if (HelperFunctions.vulgarityChecker(commentContent))
+                            {
+                                throw new HelperFunctions.FoulLanguageException();
+                            }
+                        }
+                        catch (HelperFunctions.FoulLanguageException fle)
+                        {
+
+                            MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
+                            return;
+                        }
+                        content = commentContent;
+                        ID = commentToReply.CommentID;
+                        addReplyTextBox.Text = "";
+                    }
+                }
+            }
+            else // Not selected comment, add to post
+            {
+                foreach (Post post in myPosts)
+                {
+                    if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))
+                    {
+                        string commentContent = addReplyTextBox.Text;
+                        try
+                        {
+                            if (HelperFunctions.vulgarityChecker(commentContent))
+                            {
+                                throw new HelperFunctions.FoulLanguageException();
+                            }
+                        }
+                        catch (HelperFunctions.FoulLanguageException fle)
+                        {
+
+                            MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
+                            return;
+                        }
+                        content = commentContent;
+                        ID = post.PostID;
+                        addReplyTextBox.Text = "";
+                        break;
+                    }
+                }
+
+
+            }
+            Comment replyToAdd = new Comment(
+                        content, //content
+                        (uint)currentUserID, //authorID 
+                        ID //parentID
+                    );
+
+
+
+            // MessageBox.Show("Comment to be added: id-" + replyToAdd.CommentID + " parentID-" + ID);
+            //systemOutListBox.Items.Add(replyToAdd.Content + "  | was that content.");
+
+
+            if (myComments.Add(replyToAdd))
+                systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
+            else
+                systemOutListBox.Items.Add("NONONONONO");
+
+            commentListBox.Items.Add(replyToAdd.ToString());
         }
+
 
         private void PasswordTextBox_TextChanged(object sender, EventArgs e)
         {
