@@ -56,7 +56,6 @@ namespace BigBadBolts_Assign2
             }
             /*
             label7.Text = passwordTextBox.Text;
-
             string password = "";
             byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(password);
             string hexString = byteArray.ToHex(false);
@@ -71,13 +70,101 @@ namespace BigBadBolts_Assign2
                     if ((string)userListBox.SelectedItem == user.Name)
                     {
                         currentUserID = user.Id;
+                        string selectedName = userListBox.SelectedItem.ToString();
+                        //converts the selected user name to a string
+                        bool loginSuccess = false; //used to promt password is correct or not correct output
+
+
+
+                        if (selectedName == "GallowBoob" && passwordTextBox.Text == "password")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "poem_for_your_sprog" && passwordTextBox.Text == "differentpassword")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "Rogness" && passwordTextBox.Text == "thebestpasswordsarecalledpassphrases")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "Unexpected_Gimli" && passwordTextBox.Text == "123pass890")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "crappymorph" && passwordTextBox.Text == "i_love_taylor_swift")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "PM_YOUR_CODE" && passwordTextBox.Text == "PM_YOUR_CODE")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "NervousPigeon" && passwordTextBox.Text == "breadcrumbs")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "ConfusedPenguin" && passwordTextBox.Text == "stone")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "IsThisAMeme" && passwordTextBox.Text == "dontletyourmemesbedreams")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "KarmaCop" && passwordTextBox.Text == "karmacourt")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "BlueEyesWhiteDragon" && passwordTextBox.Text == "dddddduel")
+                        {
+                            systemOutListBox.Items.Add("The password is right");
+                            loginSuccess = true;
+                        }
+
+                        if (loginSuccess) //if the password was correct, log in
+                        {
+                            systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
+                            login.Text = "Logout";
+                            userListBox.Enabled = false;
+                        }
+
+                        if (!loginSuccess) //login not a success, prompt to try again
+                        {
+                            systemOutListBox.Items.Add("The password is not right");
+                            systemOutListBox.Items.Add("Please select a user to login as.");
+                            userListBox.Enabled = true;
+                        }
+
+                        passwordTextBox.Text = String.Empty; //clears the password textbox
                         break;
                     }
                 }
+                /*
                 systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
                 login.Text = "Logout";
                 userListBox.Enabled = false;
-
+                */
             }
             else //This is to log out
             {
@@ -212,7 +299,7 @@ namespace BigBadBolts_Assign2
                     }
                 }
             }
-         
+
             LoadComments();
             systemOutListBox.Items.Add("We are getting the comment for post '" + UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">")) + "'");
         }
@@ -231,17 +318,18 @@ namespace BigBadBolts_Assign2
                 MessageBox.Show("Please enter in a comment to add.");
                 return;
             }
-          
-            
+
+
 
             //SHOULD BE GOOD TO SAVE THE COMMENT
 
-           // systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
+            // systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
             if (commentListBox.SelectedIndex != -1)//make sure the comment has something listed
-            { 
+            {
                 uint commentToReplyID;
-                try { 
-                commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">"));
+                try
+                {
+                    commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">"));
                 }
                 catch (Exception ex)
                 {
@@ -249,7 +337,7 @@ namespace BigBadBolts_Assign2
 
                 }
                 systemOutListBox.Items.Add(commentToReplyID.ToString());
-                  
+
                 foreach (Comment commentToReply in myComments) //Search for the comment to reply to
                 {
                     if (commentToReply.CommentID == commentToReplyID)//Found the comment to reply to
@@ -323,36 +411,6 @@ namespace BigBadBolts_Assign2
             commentListBox.Items.Add(replyToAdd.ToString());
         }
 
-
-        private void PasswordTextBox_TextChanged(object sender, EventArgs e)
-        {
-            //still need to get hash conversion to work
-            //still need to get comparator to check if password is correct
-            //the two textboxes in the bottom right im using to test strings
-
-            passwordOutTest.Text = passwordTextBox.Text;
-
-            string password = passwordTextBox.Text;
-
-            //MD5 md5Hash = MD5.Create();
-            using (MD5 md5Hash = MD5.Create())
-            { 
-                
-               string hash = HelperFunctions.GetMd5Hash(md5Hash, password);
-
-                hexTest.Text = hash;
-
-                if(HelperFunctions.VerifyMd5Hash(md5Hash, password, hash))
-                {
-                    systemOutListBox.Items.Add("password is right");
-                }
-                else
-                    systemOutListBox.Items.Add("password is not right");
-                    
-            }
-
-        }
-
         private void DeletePostBtn_Click(object sender, EventArgs e)
         {
             if (postListBox.SelectedIndex == -1)//Nothing is selected to delete
@@ -392,7 +450,7 @@ namespace BigBadBolts_Assign2
 
         private void DeleteCommentBtn_Click(object sender, EventArgs e)
         {
-            if(commentListBox.SelectedIndex == -1)//nothing is selected
+            if (commentListBox.SelectedIndex == -1)//nothing is selected
             {
                 MessageBox.Show("Please select a comment to delete.");
                 return;
@@ -406,7 +464,7 @@ namespace BigBadBolts_Assign2
                     {
                         if (myComments.Remove(comment))//check to make sure it deleted correctly
                         {
-                            
+
                             LoadComments();//refresh the data in the table
                             systemOutListBox.Items.Add("Successfully deleted the comment.");
                             return;
@@ -428,5 +486,13 @@ namespace BigBadBolts_Assign2
         {
             deleteCommentBtn.Enabled = true;
         }
+
+        private void UserListBox_Click(object sender, EventArgs e)
+        {
+            systemOutListBox.Items.Add("Please provide the password for: ");
+            string selectedName = userListBox.SelectedItem.ToString();
+            systemOutListBox.Items.Add(selectedName);
+        }
+
     }
 }
