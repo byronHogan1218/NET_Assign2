@@ -16,7 +16,8 @@ namespace BigBadBolts_Assign2
     public partial class RedditForm : Form
     {
         static public Nullable<uint> currentUserID;
-        static public bool authenticated = false;
+        static public bool superuser = false;
+        static public bool moderator = false;
         static public SortedSet<Post> myPosts = new SortedSet<Post>();
         static public SortedSet<Comment> myComments = new SortedSet<Comment>();
         static public SortedSet<Subreddit> mySubReddits = new SortedSet<Subreddit>();
@@ -37,7 +38,18 @@ namespace BigBadBolts_Assign2
         {
             foreach (User user in myUsers) //populate the user listBox
             {
-                userListBox.Items.Add(user.ToString());
+                if (user.Type == 1)//This is the moderator
+                {
+                    userListBox.Items.Add(user.ToString() + "   [M]");
+                }
+                else if (user.Type == 2)//This it the super user
+                {
+                    userListBox.Items.Add(user.ToString() + "   [A]");
+                }
+                else
+                {
+                    userListBox.Items.Add(user.ToString());
+                }
             }
             foreach (Subreddit sub in mySubReddits) //populate the subreddit listBox
             {
@@ -56,7 +68,6 @@ namespace BigBadBolts_Assign2
             }
             /*
             label7.Text = passwordTextBox.Text;
-
             string password = "";
             byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(password);
             string hexString = byteArray.ToHex(false);
@@ -65,24 +76,117 @@ namespace BigBadBolts_Assign2
 
             if (login.Text == "Login") //this is to login
             {
-                authenticated = true;
                 foreach (User user in myUsers)
                 {
-                    if ((string)userListBox.SelectedItem == user.Name)
+                    //Need to fix it so these lines are not needed aka compare by user id
+                    string badPractice = (string)userListBox.SelectedItem;
+                    badPractice = badPractice.Split(' ')[0];
+                    if ((string)userListBox.SelectedItem == user.Name || badPractice == user.Name)//need to remove this second part
                     {
+                        if( user.Type == 2)//Super user, must implement enumeration on this
+                        {
+                            superuser = true;
+                        }
+                        if (user.Type == 1)//Moderator, must implement enumeration on this
+                        {
+                            moderator = true;
+                        }
                         currentUserID = user.Id;
+                        string selectedName = userListBox.SelectedItem.ToString();
+                        //converts the selected user name to a string
+                        bool loginSuccess = false; //used to promt password is correct or not correct output
+
+
+                        /** TODO
+                         * Need to figure out a way to do this progrmaitcally and checking the hash value against the save one.
+                         * if you need help with this, i will help you tommorow in class. We cannot hardoce check each one 
+                         * of these values
+                         */
+                        if (selectedName == "GallowBoob" && passwordTextBox.Text == "password")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "poem_for_your_sprog" && passwordTextBox.Text == "differentpassword")
+                        {
+                            loginSuccess = true;
+                        }
+                        //This is bad practice but we have to show the type of user. we cannot check for the name like this,go by id
+                        if (selectedName == "Rogness   [A]" && passwordTextBox.Text == "thebestpasswordsarecalledpassphrases")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "Unexpected_Gimli" && passwordTextBox.Text == "123pass890")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "crappymorph" && passwordTextBox.Text == "i_love_taylor_swift")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "PM_YOUR_CODE" && passwordTextBox.Text == "PM_YOUR_CODE")
+                        {
+                            loginSuccess = true;
+                        }
+                        //this is really bad practice
+                        if (selectedName == "NervousPigeon   [M]" && passwordTextBox.Text == "breadcrumbs")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "ConfusedPenguin" && passwordTextBox.Text == "stone")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "IsThisAMeme" && passwordTextBox.Text == "dontletyourmemesbedreams")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "KarmaCop" && passwordTextBox.Text == "karmacourt")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (selectedName == "BlueEyesWhiteDragon" && passwordTextBox.Text == "dddddduel")
+                        {
+                            loginSuccess = true;
+                        }
+
+                        if (loginSuccess) //if the password was correct, log in
+                        {
+                            systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
+                            login.Text = "Logout";
+                            userListBox.Enabled = false;
+                        }
+
+                        if (!loginSuccess) //login not a success, prompt to try again
+                        {
+                            systemOutListBox.Items.Add("The password is not right,please try again.");
+                            //systemOutListBox.Items.Add("Please select a user to login as.");
+                            userListBox.Enabled = true;
+                        }
+
+                        passwordTextBox.Text = String.Empty; //clears the password textbox
                         break;
                     }
                 }
+                /*
                 systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
                 login.Text = "Logout";
                 userListBox.Enabled = false;
-
+                */
             }
             else //This is to log out
             {
                 currentUserID = null;
-                authenticated = false;
+                superuser = false;
+                moderator = false;
+                lockPostBtn.Visible = false;
                 userListBox.Enabled = true;
                 login.Text = "Login";
                 postListBox.Items.Clear();
@@ -133,7 +237,7 @@ namespace BigBadBolts_Assign2
                         break;
                     }
                 }
-                systemOutListBox.Items.Add("We are getting the posts for subbreddit '" + subIDToView + "'");
+                //systemOutListBox.Items.Add("We are getting the posts for subbreddit '" + subIDToView + "'");
 
 
                 foreach (Post subPost in myPosts) // Display all the posts that have the subReddit as its parent
@@ -191,10 +295,16 @@ namespace BigBadBolts_Assign2
             }
 
             LoadPosts();
+            if( moderator || superuser)//If the user is currently a super or moderator
+            {
+                lockPostBtn.Visible = true;
+                lockPostBtn.Enabled = true;
+            }
         }
 
         private void PostListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
             deleteCommentBtn.Enabled = false;
             addReplyTextBox.Text = "";
             deletePostBtn.Enabled = true;
@@ -206,15 +316,26 @@ namespace BigBadBolts_Assign2
                 {
                     if (post.Locked == true)
                     {
+                        if( superuser || moderator)
+                        {
+                            lockPostBtn.Text = "Unlock Post";
+                        }
                         addReplyBtn.Enabled = false;
                         addReplyTextBox.Text = "This post is locked and cannot be edited.";
                         addReplyTextBox.Enabled = false;
                     }
+                    else if (post.Locked == false)
+                    {
+                        if( superuser || moderator)
+                        {
+                            lockPostBtn.Text = "Lock Post";
+                        }
+                    }
                 }
             }
-         
+            
             LoadComments();
-            systemOutListBox.Items.Add("We are getting the comment for post '" + UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">")) + "'");
+           // systemOutListBox.Items.Add("We are getting the comment for post '" + UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">")) + "'");
         }
 
         private void AddReplyBtn_Click(object sender, EventArgs e)
@@ -231,17 +352,18 @@ namespace BigBadBolts_Assign2
                 MessageBox.Show("Please enter in a comment to add.");
                 return;
             }
-          
-            
+
+
 
             //SHOULD BE GOOD TO SAVE THE COMMENT
 
-           // systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
+            // systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
             if (commentListBox.SelectedIndex != -1)//make sure the comment has something listed
-            { 
+            {
                 uint commentToReplyID;
-                try { 
-                commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">"));
+                try
+                {
+                    commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">"));
                 }
                 catch (Exception ex)
                 {
@@ -249,7 +371,7 @@ namespace BigBadBolts_Assign2
 
                 }
                 systemOutListBox.Items.Add(commentToReplyID.ToString());
-                  
+
                 foreach (Comment commentToReply in myComments) //Search for the comment to reply to
                 {
                     if (commentToReply.CommentID == commentToReplyID)//Found the comment to reply to
@@ -323,36 +445,6 @@ namespace BigBadBolts_Assign2
             commentListBox.Items.Add(replyToAdd.ToString());
         }
 
-
-        private void PasswordTextBox_TextChanged(object sender, EventArgs e)
-        {
-            //still need to get hash conversion to work
-            //still need to get comparator to check if password is correct
-            //the two textboxes in the bottom right im using to test strings
-
-            passwordOutTest.Text = passwordTextBox.Text;
-
-            string password = passwordTextBox.Text;
-
-            //MD5 md5Hash = MD5.Create();
-            using (MD5 md5Hash = MD5.Create())
-            { 
-                
-               string hash = HelperFunctions.GetMd5Hash(md5Hash, password);
-
-                hexTest.Text = hash;
-
-                if(HelperFunctions.VerifyMd5Hash(md5Hash, password, hash))
-                {
-                    systemOutListBox.Items.Add("password is right");
-                }
-                else
-                    systemOutListBox.Items.Add("password is not right");
-                    
-            }
-
-        }
-
         private void DeletePostBtn_Click(object sender, EventArgs e)
         {
             if (postListBox.SelectedIndex == -1)//Nothing is selected to delete
@@ -364,8 +456,7 @@ namespace BigBadBolts_Assign2
             {
                 if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))//found the selected post
                 {
-                    //if(superUser) { } must implemet this
-                    if (post.PostAuthorId == currentUserID) //the correct logged in user is trying to delete
+                    if (post.PostAuthorId == currentUserID || superuser) //the correct logged in user is trying to delete
                     {
                         if (myPosts.Remove(post))//check to make sure it deleted correctly
                         {
@@ -392,7 +483,7 @@ namespace BigBadBolts_Assign2
 
         private void DeleteCommentBtn_Click(object sender, EventArgs e)
         {
-            if(commentListBox.SelectedIndex == -1)//nothing is selected
+            if (commentListBox.SelectedIndex == -1)//nothing is selected
             {
                 MessageBox.Show("Please select a comment to delete.");
                 return;
@@ -401,12 +492,11 @@ namespace BigBadBolts_Assign2
             {
                 if (comment.CommentID == UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">")))//found the selected comment
                 {
-                    //if(superUser) { } must implemet this
-                    if (comment.CommentAuthorId == currentUserID) //the correct logged in user is trying to delete
+                    if (comment.CommentAuthorId == currentUserID || superuser) //the correct logged in user is trying to delete
                     {
                         if (myComments.Remove(comment))//check to make sure it deleted correctly
                         {
-                            
+
                             LoadComments();//refresh the data in the table
                             systemOutListBox.Items.Add("Successfully deleted the comment.");
                             return;
@@ -428,5 +518,49 @@ namespace BigBadBolts_Assign2
         {
             deleteCommentBtn.Enabled = true;
         }
+
+        private void UserListBox_Click(object sender, EventArgs e)
+        {
+            systemOutListBox.Items.Add("Please provide the password for: ");
+            string selectedName = userListBox.SelectedItem.ToString();
+            systemOutListBox.Items.Add(selectedName);
+        }
+
+        private void LockPostBtn_Click(object sender, EventArgs e)
+        {
+            if (postListBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please select a post to lock.");
+                return;
+            }
+            foreach (Post post in myPosts)//search through the posts to find the one to lock.
+            {
+                if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))//found the selected post
+                {
+                    if (moderator || superuser) //the correct logged in user is trying to lock
+                    {
+                        if (post.Locked == true)
+                        {
+                            int chosen = postListBox.SelectedIndex;
+                            lockPostBtn.Text = "Unlock Post";
+                            post.Locked = false;
+                            LoadPosts();
+                            postListBox.SelectedIndex = chosen;
+                        }
+                        else
+                        {
+                            int chosen = postListBox.SelectedIndex;
+                            lockPostBtn.Text = "Lock Post";
+                            post.Locked = true;
+                            LoadPosts();
+                            postListBox.SelectedIndex = chosen;
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
+
     }
 }

@@ -24,6 +24,12 @@ namespace BigBadBolts_Assign2
         {
             get { return id; }
         }
+        
+
+        public int Type
+        {
+            get { return type; }
+        }
 
         public string Name
         {
