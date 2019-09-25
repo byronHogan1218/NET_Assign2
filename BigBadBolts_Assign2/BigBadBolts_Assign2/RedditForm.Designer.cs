@@ -316,7 +316,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.subredditListBox);
             this.Name = "RedditForm";
-            this.Text = "Form1";
+            this.Text = "SubReddit";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

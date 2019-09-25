@@ -20,13 +20,35 @@ namespace BigBadBolts_Assign2
         private uint upVotes;
         private uint downVotes;
         private readonly DateTime timeStamp;
-        private SortedSet<Comment> commentReplies;
         private uint indentLevel;
+
 
         public uint CommentID
         {
             get { return commentID; }
         }
+
+
+        public uint up
+        {
+            get { return upVotes; }
+        }
+        public uint down
+        {
+            get { return downVotes; }
+        }
+        public DateTime time
+        {
+            get { return timeStamp; }
+        }
+
+        public uint indent
+        {
+            get { return indentLevel; }
+        }
+
+
+
         public uint ParentID
         {
             get { return parentID; }
@@ -35,7 +57,10 @@ namespace BigBadBolts_Assign2
         {
             get { return this.content; }
         }
-
+        public uint CommentAuthorId
+        {
+            get { return authorID; }
+        }
         public uint Score
         {
             get { return upVotes - downVotes; }
@@ -52,7 +77,6 @@ namespace BigBadBolts_Assign2
             downVotes = 0;
             timeStamp = DateTime.Now;
    
-            commentReplies = RedditForm.myComments;
             indentLevel = 0;
             foreach (Comment tabs in RedditForm.myComments)
             {
@@ -72,7 +96,6 @@ namespace BigBadBolts_Assign2
             upVotes = _upVotes;
             downVotes = _downVotes;
             timeStamp = _timeStamp;
-            commentReplies = RedditForm.myComments;
             indentLevel = 0;
             foreach (Comment tabs in RedditForm.myComments)
             {
@@ -85,13 +108,13 @@ namespace BigBadBolts_Assign2
         }
         public Comment(string _content, uint _authorID, uint _parentID)
         {
-            commentID = (uint)RedditForm.myComments.Count + 1;
+            commentID = ((uint)RedditForm.myComments.Count() + 1);
             content = _content;
             authorID = _authorID;
             parentID = _parentID;
             upVotes = 1;
             downVotes = 0;
-            commentReplies = RedditForm.myComments;
+            timeStamp = DateTime.Now;
             indentLevel = 0;
             foreach (Comment tabs in RedditForm.myComments)
             {
@@ -103,11 +126,8 @@ namespace BigBadBolts_Assign2
         }
         ////////////////END CONSTREUCTOR ZONE///////////////////////////////////////////
 
-
-        public uint CommentAuthorId
-        {
-            get { return authorID; }
-        }
+    
+   
         public int CompareTo(Object aplha)
         {
             if (aplha == null)
