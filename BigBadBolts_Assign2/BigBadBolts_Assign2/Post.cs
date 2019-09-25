@@ -96,6 +96,7 @@ namespace BigBadBolts_Assign2
 
         public bool Locked
         {
+            set { locked = value; }
             get { return locked; }
         }
 
