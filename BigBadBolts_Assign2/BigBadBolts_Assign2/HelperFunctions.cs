@@ -208,7 +208,7 @@ namespace BigBadBolts_Assign2
 
                     List<string> moderating = new List<string>();
 
-                    for (int i = 7; i < tokens.Length; ++i)
+                    for (int i = 6; i < tokens.Length; ++i)
                     {
                         moderating.Add(tokens[i]);
                     }

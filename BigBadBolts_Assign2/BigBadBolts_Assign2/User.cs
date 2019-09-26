@@ -30,7 +30,7 @@ namespace BigBadBolts_Assign2
         private string passwordHash;
         private int postScore;
         private int commonScore;
-        private List<uint> moderartingSubs = new List<uint>();
+        private List<string> moderartingSubs = new List<string>();
 
         //public versions
         public uint Id
@@ -38,6 +38,10 @@ namespace BigBadBolts_Assign2
             get { return id; }
         }
         
+        public List<string> ModeratingSubs
+        {
+            get { return moderartingSubs; }
+        }
 
         public int Type
         {
@@ -94,13 +98,7 @@ namespace BigBadBolts_Assign2
             commonScore = conCommon;
             foreach (string subName in conModeratingSubNames) //check each name passed in to the existing subreddits
             {
-                foreach (Subreddit sub in RedditForm.mySubReddits) //checking against existing subreddits
-                {
-                    if (sub.Title == subName) // found the the subbreddit, add the id to the moderatingSubs
-                    {
-                        this.moderartingSubs.Add(sub.Id);
-                    }
-                }
+                this.moderartingSubs.Add(subName);
             }
         }
 

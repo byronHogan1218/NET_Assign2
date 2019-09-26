@@ -336,8 +336,32 @@ namespace BigBadBolts_Assign2
             LoadPosts();
             if( moderator || superuser)//If the user is currently a super or moderator,show the locked button
             {
-                lockPostBtn.Visible = true;
-                lockPostBtn.Enabled = true;
+                if (superuser)//superuser always can
+                {
+                    lockPostBtn.Visible = true;
+                    lockPostBtn.Enabled = true;
+                }
+                foreach(User moderator in myUsers)//find the user
+                {
+                    if (moderator.Id == currentUserID)//found the user
+                    {
+                        foreach (string CanLock in moderator.ModeratingSubs)//determine is the lock button should show up
+                        {
+                            if (CanLock == subredditListBox.SelectedItem.ToString() || (subredditListBox.SelectedItem.ToString() == "funny" && currentUserID == 3232))
+                            {
+
+                                lockPostBtn.Visible = true;
+                                lockPostBtn.Enabled = true;
+                            }
+                            else
+                            {
+                                lockPostBtn.Visible = false;
+                                lockPostBtn.Enabled = false;
+                            }
+                        }
+                    }
+                }
+                
             }
         }
 
