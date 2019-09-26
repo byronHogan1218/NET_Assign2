@@ -60,8 +60,6 @@ namespace BigBadBolts_Assign2
         private void LoginBtn_Click(object sender, EventArgs e)
         {
 
-            //Need to do password stuff here
-
             if (userListBox.SelectedIndex == -1)//check to make sure an option was selected
             {
                 systemOutListBox.Items.Add("Please select a user to login as.");
@@ -527,5 +525,14 @@ namespace BigBadBolts_Assign2
             }
         }
 
+        private void UserListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PasswordTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
