@@ -75,9 +75,9 @@ namespace BigBadBolts_Assign2
                 foreach (User user in myUsers)
                 {
                     //Need to fix it so these lines are not needed aka compare by user id
-                    string badPractice = (string)userListBox.SelectedItem;
-                    badPractice = badPractice.Split(' ')[0];
-                    if ((string)userListBox.SelectedItem == user.Name || badPractice == user.Name)//need to remove this second part
+                    string curUser = (string)userListBox.SelectedItem;
+                    curUser = curUser.Split(' ')[0];
+                    if ((string)userListBox.SelectedItem == user.Name || curUser == user.Name)//need to remove this second part
                     {
                         if( user.Type == 2)//Super user, must implement enumeration on this
                         {
@@ -97,7 +97,7 @@ namespace BigBadBolts_Assign2
                             //selectedName = user.Name;
 
                         //converts the selected user name to a string
-                        bool loginSuccess = false; //used to prompt password is correct or not correct output
+                        bool loginSuccess = false; //used to prompt password is correct or not
 
                         string hashCode = user.PasswordHash.ToString(); //the hashpassword from the user.txt file
                         string inputPassword = passwordTextBox.Text.GetHashCode().ToString("X"); //the hash password that the user inputs
@@ -105,20 +105,16 @@ namespace BigBadBolts_Assign2
                         if (hashCode == inputPassword)
                         {
                             //systemOutListBox.Items.Add("The two hash values are the same"); //used to test hash
-                            //systemOutListBox.Items.Add("Hash code:");
-                            //systemOutListBox.Items.Add(hashCode);
-                            //systemOutListBox.Items.Add("password: ");
-                            //systemOutListBox.Items.Add(inputPassword);
+                            //systemOutListBox.Items.Add("Hash code: " + hashCode);
+                            //systemOutListBox.Items.Add("password: " + inputPassword);
                             loginSuccess = true;
                         }
 
                         if(hashCode != inputPassword)
                         {
                             //systemOutListBox.Items.Add("The two hash values are not the same"); //used to test hash
-                            //systemOutListBox.Items.Add("Hash code:");
-                            //systemOutListBox.Items.Add(hashCode);
-                            //systemOutListBox.Items.Add("password: ");
-                            //systemOutListBox.Items.Add(inputPassword);
+                            //systemOutListBox.Items.Add("Hash code: " + hashCode);
+                            //systemOutListBox.Items.Add("password: " + inputPassword);
                             loginSuccess = false;
                         }
 
@@ -484,11 +480,10 @@ namespace BigBadBolts_Assign2
             deleteCommentBtn.Enabled = true;
         }
 
-        private void UserListBox_Click(object sender, EventArgs e)
+        private void UserListBox_Click(object sender, EventArgs e) //used to prompt the user to enter the password
         {
-            systemOutListBox.Items.Add("Please provide the password for: ");
             string selectedName = userListBox.SelectedItem.ToString();
-            systemOutListBox.Items.Add(selectedName);
+            systemOutListBox.Items.Add("Please provide the password for: " + selectedName);
         }
 
         private void LockPostBtn_Click(object sender, EventArgs e)
