@@ -41,6 +41,11 @@ namespace BigBadBolts_Assign2
             }
         }
 
+        public string PasswordHash
+        {
+            get { return passwordHash; }
+        }
+
         public int PostScore
         {
             get { return postScore; }

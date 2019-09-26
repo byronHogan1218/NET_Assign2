@@ -59,6 +59,7 @@ namespace BigBadBolts_Assign2
 
         private void LoginBtn_Click(object sender, EventArgs e)
         {
+
             //Need to do password stuff here
 
             if (userListBox.SelectedIndex == -1)//check to make sure an option was selected
@@ -66,12 +67,7 @@ namespace BigBadBolts_Assign2
                 systemOutListBox.Items.Add("Please select a user to login as.");
                 return;
             }
-            /*
-            label7.Text = passwordTextBox.Text;
-            string password = "";
-            byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(password);
-            string hexString = byteArray.ToHex(false);
-            */
+
             Button login = sender as Button;
 
             if (login.Text == "Login") //this is to login
@@ -91,73 +87,42 @@ namespace BigBadBolts_Assign2
                         {
                             moderator = true;
                         }
+
                         currentUserID = user.Id;
+
                         string selectedName = userListBox.SelectedItem.ToString();
+                        selectedName = selectedName.Split(' ')[0];
+
+                        //if (user.Id == currentUserID)
+                            //selectedName = user.Name;
+
                         //converts the selected user name to a string
-                        bool loginSuccess = false; //used to promt password is correct or not correct output
+                        bool loginSuccess = false; //used to prompt password is correct or not correct output
 
+                        string hashCode = user.PasswordHash.ToString(); //the hashpassword from the user.txt file
+                        string inputPassword = passwordTextBox.Text.GetHashCode().ToString("X"); //the hash password that the user inputs
 
-                        /** TODO
-                         * Need to figure out a way to do this progrmaitcally and checking the hash value against the save one.
-                         * if you need help with this, i will help you tommorow in class. We cannot hardoce check each one 
-                         * of these values
-                         */
-                        if (selectedName == "GallowBoob" && passwordTextBox.Text == "password")
+                        if (hashCode == inputPassword)
                         {
+                            //systemOutListBox.Items.Add("The two hash values are the same"); //used to test hash
+                            //systemOutListBox.Items.Add("Hash code:");
+                            //systemOutListBox.Items.Add(hashCode);
+                            //systemOutListBox.Items.Add("password: ");
+                            //systemOutListBox.Items.Add(inputPassword);
                             loginSuccess = true;
                         }
 
-                        if (selectedName == "poem_for_your_sprog" && passwordTextBox.Text == "differentpassword")
+                        if(hashCode != inputPassword)
                         {
-                            loginSuccess = true;
-                        }
-                        //This is bad practice but we have to show the type of user. we cannot check for the name like this,go by id
-                        if (selectedName == "Rogness   [A]" && passwordTextBox.Text == "thebestpasswordsarecalledpassphrases")
-                        {
-                            loginSuccess = true;
-                        }
-
-                        if (selectedName == "Unexpected_Gimli" && passwordTextBox.Text == "123pass890")
-                        {
-                            loginSuccess = true;
+                            //systemOutListBox.Items.Add("The two hash values are not the same"); //used to test hash
+                            //systemOutListBox.Items.Add("Hash code:");
+                            //systemOutListBox.Items.Add(hashCode);
+                            //systemOutListBox.Items.Add("password: ");
+                            //systemOutListBox.Items.Add(inputPassword);
+                            loginSuccess = false;
                         }
 
-                        if (selectedName == "crappymorph" && passwordTextBox.Text == "i_love_taylor_swift")
-                        {
-                            loginSuccess = true;
-                        }
-
-                        if (selectedName == "PM_YOUR_CODE" && passwordTextBox.Text == "PM_YOUR_CODE")
-                        {
-                            loginSuccess = true;
-                        }
-                        //this is really bad practice
-                        if (selectedName == "NervousPigeon   [M]" && passwordTextBox.Text == "breadcrumbs")
-                        {
-                            loginSuccess = true;
-                        }
-
-                        if (selectedName == "ConfusedPenguin" && passwordTextBox.Text == "stone")
-                        {
-                            loginSuccess = true;
-                        }
-
-                        if (selectedName == "IsThisAMeme" && passwordTextBox.Text == "dontletyourmemesbedreams")
-                        {
-                            loginSuccess = true;
-                        }
-
-                        if (selectedName == "KarmaCop" && passwordTextBox.Text == "karmacourt")
-                        {
-                            loginSuccess = true;
-                        }
-
-                        if (selectedName == "BlueEyesWhiteDragon" && passwordTextBox.Text == "dddddduel")
-                        {
-                            loginSuccess = true;
-                        }
-
-                        if (loginSuccess) //if the password was correct, log in
+                            if (loginSuccess) //if the password was correct, log in
                         {
                             systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
                             login.Text = "Logout";
@@ -166,7 +131,7 @@ namespace BigBadBolts_Assign2
 
                         if (!loginSuccess) //login not a success, prompt to try again
                         {
-                            systemOutListBox.Items.Add("The password is not right,please try again.");
+                            systemOutListBox.Items.Add("The password is not right, please try again.");
                             //systemOutListBox.Items.Add("Please select a user to login as.");
                             userListBox.Enabled = true;
                         }
