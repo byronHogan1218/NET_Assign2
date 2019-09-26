@@ -97,7 +97,6 @@ namespace BigBadBolts_Assign2
             this.userListBox.Name = "userListBox";
             this.userListBox.Size = new System.Drawing.Size(137, 95);
             this.userListBox.TabIndex = 3;
-            this.userListBox.SelectedIndexChanged += new System.EventHandler(this.UserListBox_SelectedIndexChanged);
             // 
             // loginBtn
             // 
@@ -224,7 +223,6 @@ namespace BigBadBolts_Assign2
             this.passwordTextBox.PasswordChar = '*';
             this.passwordTextBox.Size = new System.Drawing.Size(137, 20);
             this.passwordTextBox.TabIndex = 18;
-            this.passwordTextBox.TextChanged += new System.EventHandler(this.PasswordTextBox_TextChanged);
             // 
             // membersTileLabel
             // 
