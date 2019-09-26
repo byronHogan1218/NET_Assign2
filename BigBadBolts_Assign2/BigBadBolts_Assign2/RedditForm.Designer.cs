@@ -241,6 +241,8 @@ namespace BigBadBolts_Assign2
             this.passwordTextBox.Location = new System.Drawing.Point(8, 159);
             this.passwordTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.passwordTextBox.Name = "passwordTextBox";
+            this.passwordTextBox.PasswordChar = '*';
+            this.passwordTextBox.Size = new System.Drawing.Size(137, 20);
             this.passwordTextBox.Size = new System.Drawing.Size(181, 22);
             this.passwordTextBox.TabIndex = 18;
             // 

@@ -137,7 +137,14 @@ namespace BigBadBolts_Assign2
 
             if (rightOp != null)
             {
-                return Score.CompareTo(rightOp.Score); //This might have to be switched around
+                if (Score.CompareTo(rightOp.Score) == 0)
+                {
+                    return timeStamp.CompareTo(rightOp.timeStamp);
+                }
+                else
+                {
+                    return Score.CompareTo(rightOp.Score); //This might have to be switched around
+                }
             }
             else
             {

@@ -60,8 +60,6 @@ namespace BigBadBolts_Assign2
         private void LoginBtn_Click(object sender, EventArgs e)
         {
 
-            //Need to do password stuff here
-
             if (userListBox.SelectedIndex == -1)//check to make sure an option was selected
             {
                 systemOutListBox.Items.Add("Please select a user to login as.");
@@ -79,23 +77,12 @@ namespace BigBadBolts_Assign2
                     curUser = curUser.Split(' ')[0];
                     if ((string)userListBox.SelectedItem == user.Name || curUser == user.Name)//need to remove this second part
                     {
-                        if( user.Type == 2)//Super user, must implement enumeration on this
-                        {
-                            superuser = true;
-                        }
-                        if (user.Type == 1)//Moderator, must implement enumeration on this
-                        {
-                            moderator = true;
-                        }
-
-                        currentUserID = user.Id;
+             
 
                         string selectedName = userListBox.SelectedItem.ToString();
                         selectedName = selectedName.Split(' ')[0];
 
-                        //if (user.Id == currentUserID)
-                            //selectedName = user.Name;
-
+                    
                         //converts the selected user name to a string
                         bool loginSuccess = false; //used to prompt password is correct or not
 
@@ -104,23 +91,63 @@ namespace BigBadBolts_Assign2
 
                         if (hashCode == inputPassword)
                         {
-                            //systemOutListBox.Items.Add("The two hash values are the same"); //used to test hash
-                            //systemOutListBox.Items.Add("Hash code: " + hashCode);
-                            //systemOutListBox.Items.Add("password: " + inputPassword);
                             loginSuccess = true;
                         }
 
                         if(hashCode != inputPassword)
                         {
-                            //systemOutListBox.Items.Add("The two hash values are not the same"); //used to test hash
-                            //systemOutListBox.Items.Add("Hash code: " + hashCode);
-                            //systemOutListBox.Items.Add("password: " + inputPassword);
                             loginSuccess = false;
                         }
 
-                            if (loginSuccess) //if the password was correct, log in
+                        if (loginSuccess) //if the password was correct, log in
                         {
+                            if (user.Type == 2)//Super user, must implement enumeration on this
+                            {
+                                superuser = true;
+                            }
+                            if (user.Type == 1)//Moderator, must implement enumeration on this
+                            {
+                                moderator = true;
+                            }
+
+                            currentUserID = user.Id;
+                            postListBox.Items.Clear();
+                            commentListBox.Items.Clear();
+                            foreach (Post userPost in myPosts)
+                            {
+                                if (userPost.PostAuthorId == currentUserID)
+                                {
+                                    postListBox.Items.Add(userPost.ToString());
+                                }
+                                
+                            }
+                            if(postListBox.Items.Count == 0)
+                            {
+                                postListBox.Items.Add("There are no posts by this user.");
+                                postListBox.Enabled = false;
+                            }
+                            else
+                            {
+                                postListBox.Enabled = true;
+                            }
+                            foreach (Comment userComment in myComments)
+                            {
+                                if (userComment.CommentAuthorId == currentUserID)
+                                {
+                                    commentListBox.Items.Add(userComment.ToString());
+                                }
+                            }
+                            if (commentListBox.Items.Count == 0)
+                            {
+                                commentListBox.Items.Add("There are no comments by this user.");
+                                commentListBox.Enabled = false;
+                            }
+                            else
+                            {
+                                commentListBox.Enabled = true;
+                            }
                             systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
+                            systemOutListBox.Items.Add("Getting all posts and comments by " + userListBox.SelectedItem);
                             login.Text = "Logout";
                             userListBox.Enabled = false;
                         }
@@ -128,7 +155,6 @@ namespace BigBadBolts_Assign2
                         if (!loginSuccess) //login not a success, prompt to try again
                         {
                             systemOutListBox.Items.Add("The password is not right, please try again.");
-                            //systemOutListBox.Items.Add("Please select a user to login as.");
                             userListBox.Enabled = true;
                         }
 
@@ -136,14 +162,10 @@ namespace BigBadBolts_Assign2
                         break;
                     }
                 }
-                /*
-                systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
-                login.Text = "Logout";
-                userListBox.Enabled = false;
-                */
             }
             else //This is to log out
             {
+                systemOutListBox.Items.Add("Goodbye " + userListBox.SelectedItem);
                 currentUserID = null;
                 superuser = false;
                 moderator = false;
@@ -172,6 +194,7 @@ namespace BigBadBolts_Assign2
 
         public void LoadPosts()
         {
+            postListBox.Enabled = true;
             postListBox.Items.Clear();//clear out anything that might have been in it before
             uint subIDToView = 0;
             if ((string)subredditListBox.SelectedItem == "all") //determines if all the posts should be displayed
@@ -209,10 +232,16 @@ namespace BigBadBolts_Assign2
                     }
                 }
             }
+            if (postListBox.Items.Count == 0)
+            {
+                postListBox.Items.Add("There are no posts for this Subreddit.");
+                postListBox.Enabled = false;
+            }
         }
 
         public void LoadComments()
         {
+            commentListBox.Enabled = true;
             commentListBox.Items.Clear();//clear out anything that might have been in it before
             uint postIDToView = UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">"));
 
@@ -239,7 +268,10 @@ namespace BigBadBolts_Assign2
                 }
             }
             if (commentListBox.Items.Count == 0)
+            {
                 commentListBox.Items.Add("There are no comments to view.");
+                commentListBox.Enabled = false;
+            }
         }
 
         private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -394,16 +426,13 @@ namespace BigBadBolts_Assign2
 
 
 
-            // MessageBox.Show("Comment to be added: id-" + replyToAdd.CommentID + " parentID-" + ID);
-            //systemOutListBox.Items.Add(replyToAdd.Content + "  | was that content.");
-
 
             if (myComments.Add(replyToAdd))
-                systemOutListBox.Items.Add("YAYAYAYAYAYAYA");
+                systemOutListBox.Items.Add("Succesfully Added a new comment.");
             else
-                systemOutListBox.Items.Add("NONONONONO");
+                systemOutListBox.Items.Add("We could not add your comment. Try again later.");
 
-            commentListBox.Items.Add(replyToAdd.ToString());
+            LoadComments();
         }
 
         private void DeletePostBtn_Click(object sender, EventArgs e)
@@ -521,6 +550,7 @@ namespace BigBadBolts_Assign2
 
             }
         }
+
 
     }
 }
