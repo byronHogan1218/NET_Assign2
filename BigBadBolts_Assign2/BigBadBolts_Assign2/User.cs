@@ -3,7 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+///*******************************************************************
+//*                                                                  *
+//*  CSCI 473-1/504-1       Assignment 2                Fall   2019  *
+//*                                                                  *
+//*                                                                  *
+//*  Program Name:  Reddit                                           *
+//*                                                                  *
+//*  Programmer:    Byron Hogan,  z1825194                           *
+//*                 Margaret Higginbotham, z1793581                  *
+//*                                                                  *
+//*******************************************************************/
+/**
+ * Pupose : This provides a definition of the User class
+ */
 namespace BigBadBolts_Assign2
 {
     /* The User class
@@ -37,7 +50,7 @@ namespace BigBadBolts_Assign2
             set
             {
                 if (value.Length >= 5 && value.Length <= 21) ; //Added a semicolon
-                                                                //name = value;//This isnt working properly
+
             }
         }
 

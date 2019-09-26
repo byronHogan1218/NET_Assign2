@@ -4,7 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+///*******************************************************************
+//*                                                                  *
+//*  CSCI 473-1/504-1       Assignment 2                Fall   2019  *
+//*                                                                  *
+//*                                                                  *
+//*  Program Name:  Reddit                                           *
+//*                                                                  *
+//*  Programmer:    Byron Hogan,  z1825194                           *
+//*                 Margaret Higginbotham, z1793581                  *
+//*                                                                  *
+//*******************************************************************/
+/**
+ * Pupose : This provides a definition of the Subbreddit class
+ */
 
 namespace BigBadBolts_Assign2
 {
@@ -25,7 +38,6 @@ namespace BigBadBolts_Assign2
             get { return id; }
             set { }// id = value; } added the '}' this needs to be fixed
         }
-        //i need to do unique id
 
         public SortedSet<Post> SubPosts
         {

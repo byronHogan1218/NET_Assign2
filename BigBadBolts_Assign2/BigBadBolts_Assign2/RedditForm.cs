@@ -9,6 +9,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 
+///*******************************************************************
+//*                                                                  *
+//*  CSCI 473-1/504-1       Assignment 2                Fall   2019  *
+//*                                                                  *
+//*                                                                  *
+//*  Program Name:  Reddit                                           *
+//*                                                                  *
+//*  Programmer:    Byron Hogan,  z1825194                           *
+//*                 Margaret Higginbotham, z1793581                  *
+//*                                                                  *
+//*******************************************************************/
+/**
+ * Purpose: This is the file that contains the logic for the gui for the reddit form
+ */
 namespace BigBadBolts_Assign2
 {
 
@@ -30,10 +44,16 @@ namespace BigBadBolts_Assign2
             HelperFunctions.getFileInput(myPosts, myComments, mySubReddits, myUsers);
             InitializeComponent(); //This needs to be towards the top of the program!!!
 
+            //Set up the form
             LoadTables();
             ToggleSubLabels(false);
         }
 
+         /**
+         * This is a helper function that is used to load the information into the tables.
+         * Parameters: none
+         * Returns:   nothing
+         */
         private void LoadTables()
         {
             foreach (User user in myUsers) //populate the user listBox
@@ -57,6 +77,11 @@ namespace BigBadBolts_Assign2
             }
         }
 
+         /**
+         * This is a click event function that is used to log a user in or out.
+         * Parameters: sender, the button that is being clicked
+         * Returns:   nothing
+         */
         private void LoginBtn_Click(object sender, EventArgs e)
         {
 
@@ -72,18 +97,15 @@ namespace BigBadBolts_Assign2
             {
                 foreach (User user in myUsers)
                 {
-                    //Need to fix it so these lines are not needed aka compare by user id
+                    //Get rid of any extra info in the name
                     string curUser = (string)userListBox.SelectedItem;
                     curUser = curUser.Split(' ')[0];
-                    if ((string)userListBox.SelectedItem == user.Name || curUser == user.Name)//need to remove this second part
+                    if ((string)userListBox.SelectedItem == user.Name || curUser == user.Name)//found the user we are trying to log in as
                     {
-             
-
+                        //converts the selected user name to a string
                         string selectedName = userListBox.SelectedItem.ToString();
                         selectedName = selectedName.Split(' ')[0];
 
-                    
-                        //converts the selected user name to a string
                         bool loginSuccess = false; //used to prompt password is correct or not
 
                         string hashCode = user.PasswordHash.ToString(); //the hashpassword from the user.txt file
@@ -111,6 +133,7 @@ namespace BigBadBolts_Assign2
                             }
 
                             currentUserID = user.Id;
+                            //Load the things written by the logged in user
                             postListBox.Items.Clear();
                             commentListBox.Items.Clear();
                             foreach (Post userPost in myPosts)
@@ -146,6 +169,8 @@ namespace BigBadBolts_Assign2
                             {
                                 commentListBox.Enabled = true;
                             }
+                            //Done loading things written by the user
+
                             systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
                             systemOutListBox.Items.Add("Getting all posts and comments by " + userListBox.SelectedItem);
                             login.Text = "Logout";
@@ -165,6 +190,7 @@ namespace BigBadBolts_Assign2
             }
             else //This is to log out
             {
+                //Reset everything to a logged out state
                 systemOutListBox.Items.Add("Goodbye " + userListBox.SelectedItem);
                 currentUserID = null;
                 superuser = false;
@@ -184,6 +210,12 @@ namespace BigBadBolts_Assign2
             }
         }
 
+
+         /**
+         * This is a helper function that is used to hide or view the subbreddit labels.
+         * Parameters: a bool represting with value the labels should be set to
+         * Returns:   nothing
+         */
         private void ToggleSubLabels(bool status)
         {
             membersNumberLabel.Visible = status;
@@ -192,6 +224,11 @@ namespace BigBadBolts_Assign2
             activeTitleLabel.Visible = status;
         }
 
+         /**
+         * This is a helper function that is used to load all the posts based on the subreddit id.
+         * Parameters: none
+         * Returns:   nothing
+         */
         public void LoadPosts()
         {
             postListBox.Enabled = true;
@@ -221,7 +258,6 @@ namespace BigBadBolts_Assign2
                         break;
                     }
                 }
-                //systemOutListBox.Items.Add("We are getting the posts for subbreddit '" + subIDToView + "'");
 
 
                 foreach (Post subPost in myPosts) // Display all the posts that have the subReddit as its parent
@@ -232,13 +268,18 @@ namespace BigBadBolts_Assign2
                     }
                 }
             }
-            if (postListBox.Items.Count == 0)
+            if (postListBox.Items.Count == 0)//Determines if no posts were loaded from the subreddit
             {
                 postListBox.Items.Add("There are no posts for this Subreddit.");
                 postListBox.Enabled = false;
             }
         }
 
+         /**
+         * This is a helper function that is used to load all the comments based on the post id.
+         * Parameters: none
+         * Returns:   nothing
+         */
         public void LoadComments()
         {
             commentListBox.Enabled = true;
@@ -250,7 +291,7 @@ namespace BigBadBolts_Assign2
                 if (postIDToView == comment.ParentID) //Found a comment to the post
                 {
                     commentListBox.Items.Add(comment.ToString());
-                    foreach (Comment reply in myComments)
+                    foreach (Comment reply in myComments)//load and display replies to comments
                     {
                         if (reply.ParentID == comment.CommentID)
                         {
@@ -267,13 +308,18 @@ namespace BigBadBolts_Assign2
 
                 }
             }
-            if (commentListBox.Items.Count == 0)
+            if (commentListBox.Items.Count == 0) //Determines if no comments were loaded for a post
             {
                 commentListBox.Items.Add("There are no comments to view.");
                 commentListBox.Enabled = false;
             }
         }
 
+         /**
+         * This is a event function that watches for a subreddit index change and is used to load all the posts based on the subreddit id.
+         * Parameters: none that we use
+         * Returns:   nothing
+         */
         private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             deleteCommentBtn.Enabled = false;
@@ -288,13 +334,18 @@ namespace BigBadBolts_Assign2
             }
 
             LoadPosts();
-            if( moderator || superuser)//If the user is currently a super or moderator
+            if( moderator || superuser)//If the user is currently a super or moderator,show the locked button
             {
                 lockPostBtn.Visible = true;
                 lockPostBtn.Enabled = true;
             }
         }
 
+         /**
+         * This is a event function that watches for a post index change and is used to load all the comments based on the post id.
+         * Parameters: none that we use
+         * Returns:   nothing
+         */
         private void PostListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             
@@ -303,11 +354,11 @@ namespace BigBadBolts_Assign2
             deletePostBtn.Enabled = true;
             addReplyTextBox.Enabled = true;
             addReplyBtn.Enabled = true;
-            foreach (Post post in myPosts)
+            foreach (Post post in myPosts)//Find the selected post and handle the loading of the lock button
             {
-                if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))
+                if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))//found the post
                 {
-                    if (post.Locked == true)
+                    if (post.Locked == true)//the post is locked
                     {
                         if( superuser || moderator)
                         {
@@ -317,7 +368,7 @@ namespace BigBadBolts_Assign2
                         addReplyTextBox.Text = "This post is locked and cannot be edited.";
                         addReplyTextBox.Enabled = false;
                     }
-                    else if (post.Locked == false)
+                    else if (post.Locked == false)//The post is unlocked
                     {
                         if( superuser || moderator)
                         {
@@ -326,11 +377,15 @@ namespace BigBadBolts_Assign2
                     }
                 }
             }
-            
             LoadComments();
-           // systemOutListBox.Items.Add("We are getting the comment for post '" + UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">")) + "'");
         }
 
+
+         /**
+         * This is a event function that watches the add reply button being clicked and is used to add a reply to a post or comment.
+         * Parameters: none that we use
+         * Returns:   nothing
+         */
         private void AddReplyBtn_Click(object sender, EventArgs e)
         {
             string content = "";
@@ -345,39 +400,35 @@ namespace BigBadBolts_Assign2
                 MessageBox.Show("Please enter in a comment to add.");
                 return;
             }
-
-
-
             //SHOULD BE GOOD TO SAVE THE COMMENT
 
-            // systemOutListBox.Items.Add("This is the index of selected item: " + commentListBox.SelectedIndex);
+
             if (commentListBox.SelectedIndex != -1)//make sure the comment has something listed
             {
                 uint commentToReplyID;
-                try
+                try//Makes sure to get a value in the ID
                 {
                     commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(commentListBox.SelectedItem.ToString(), "<", ">"));
                 }
-                catch (Exception ex)
+                catch (Exception ex)//No value, use the posts id
                 {
                     commentToReplyID = UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">"));
 
                 }
-                systemOutListBox.Items.Add(commentToReplyID.ToString());
 
                 foreach (Comment commentToReply in myComments) //Search for the comment to reply to
                 {
                     if (commentToReply.CommentID == commentToReplyID)//Found the comment to reply to
                     {
                         string commentContent = addReplyTextBox.Text;
-                        try
+                        try//Make sure no bad words are in the comment
                         {
                             if (HelperFunctions.vulgarityChecker(commentContent))
                             {
                                 throw new HelperFunctions.FoulLanguageException();
                             }
                         }
-                        catch (HelperFunctions.FoulLanguageException fle)
+                        catch (HelperFunctions.FoulLanguageException fle)//Hanldes bad words
                         {
 
                             MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
@@ -391,19 +442,19 @@ namespace BigBadBolts_Assign2
             }
             else // Not selected comment, add to post
             {
-                foreach (Post post in myPosts)
+                foreach (Post post in myPosts)//search the posts for selected post
                 {
-                    if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))
+                    if (post.PostID == UInt32.Parse(HelperFunctions.getBetween(postListBox.SelectedItem.ToString(), "<", ">")))//found selected post
                     {
                         string commentContent = addReplyTextBox.Text;
-                        try
+                        try//Make sure no bad words are in the comment
                         {
                             if (HelperFunctions.vulgarityChecker(commentContent))
                             {
                                 throw new HelperFunctions.FoulLanguageException();
                             }
                         }
-                        catch (HelperFunctions.FoulLanguageException fle)
+                        catch (HelperFunctions.FoulLanguageException fle)//handles the case a bad word is found
                         {
 
                             MessageBox.Show(fle.ToString(), "BAD WORD DETECTED");
@@ -418,6 +469,7 @@ namespace BigBadBolts_Assign2
 
 
             }
+            //build the new comment to add
             Comment replyToAdd = new Comment(
                         content, //content
                         (uint)currentUserID, //authorID 
@@ -426,15 +478,20 @@ namespace BigBadBolts_Assign2
 
 
 
-
-            if (myComments.Add(replyToAdd))
+            //Add the comment to the sorted set
+            if (myComments.Add(replyToAdd))//determine if it is added
                 systemOutListBox.Items.Add("Succesfully Added a new comment.");
             else
                 systemOutListBox.Items.Add("We could not add your comment. Try again later.");
-
+            //refresh the comments with the new comment
             LoadComments();
         }
 
+         /**
+         * This is a event function that watches the delete post button being clicked and is used to delete a post.
+         * Parameters: none that we use
+         * Returns:   nothing
+         */
         private void DeletePostBtn_Click(object sender, EventArgs e)
         {
             if (postListBox.SelectedIndex == -1)//Nothing is selected to delete
@@ -471,6 +528,11 @@ namespace BigBadBolts_Assign2
             }
         }
 
+        /**
+    * This is a event function that watches the delete comment button being clicked and is used to delete a comment.
+    * Parameters: none that we use
+    * Returns:   nothing
+    */
         private void DeleteCommentBtn_Click(object sender, EventArgs e)
         {
             if (commentListBox.SelectedIndex == -1)//nothing is selected
@@ -509,15 +571,25 @@ namespace BigBadBolts_Assign2
             deleteCommentBtn.Enabled = true;
         }
 
-        private void UserListBox_Click(object sender, EventArgs e) //used to prompt the user to enter the password
+        /**
+        * This is a event function that watches the user list box index changing and is used to prompt the user to enter the password.
+        * Parameters: none that we use
+        * Returns:   nothing
+        */
+        private void UserListBox_Click(object sender, EventArgs e) 
         {
             string selectedName = userListBox.SelectedItem.ToString();
             systemOutListBox.Items.Add("Please provide the password for: " + selectedName);
         }
 
+         /**
+         * This is a event function that watches the lock post button being clicked and is used to lock or unlock a post.
+         * Parameters: none that we use
+         * Returns:   nothing
+         */
         private void LockPostBtn_Click(object sender, EventArgs e)
         {
-            if (postListBox.SelectedIndex == -1)
+            if (postListBox.SelectedIndex == -1)//Makes sure that a post is selected
             {
                 MessageBox.Show("Please select a post to lock.");
                 return;
@@ -528,7 +600,7 @@ namespace BigBadBolts_Assign2
                 {
                     if (moderator || superuser) //the correct logged in user is trying to lock
                     {
-                        if (post.Locked == true)
+                        if (post.Locked == true)//The post is locked,unlock it.
                         {
                             int chosen = postListBox.SelectedIndex;
                             lockPostBtn.Text = "Unlock Post";
@@ -536,7 +608,7 @@ namespace BigBadBolts_Assign2
                             LoadPosts();
                             postListBox.SelectedIndex = chosen;
                         }
-                        else
+                        else//the post is unlocked,lock it
                         {
                             int chosen = postListBox.SelectedIndex;
                             lockPostBtn.Text = "Lock Post";
@@ -550,7 +622,5 @@ namespace BigBadBolts_Assign2
 
             }
         }
-
-
     }
 }
