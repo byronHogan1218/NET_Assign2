@@ -99,7 +99,7 @@ namespace BigBadBolts_Assign2
                             loginSuccess = false;
                         }
 
-                            if (loginSuccess) //if the password was correct, log in
+                        if (loginSuccess) //if the password was correct, log in
                         {
                             if (user.Type == 2)//Super user, must implement enumeration on this
                             {
@@ -119,6 +119,16 @@ namespace BigBadBolts_Assign2
                                 {
                                     postListBox.Items.Add(userPost.ToString());
                                 }
+                                
+                            }
+                            if(postListBox.Items.Count == 0)
+                            {
+                                postListBox.Items.Add("There are no posts by this user.");
+                                postListBox.Enabled = false;
+                            }
+                            else
+                            {
+                                postListBox.Enabled = true;
                             }
                             foreach (Comment userComment in myComments)
                             {
@@ -126,6 +136,15 @@ namespace BigBadBolts_Assign2
                                 {
                                     commentListBox.Items.Add(userComment.ToString());
                                 }
+                            }
+                            if (commentListBox.Items.Count == 0)
+                            {
+                                commentListBox.Items.Add("There are no comments by this user.");
+                                commentListBox.Enabled = false;
+                            }
+                            else
+                            {
+                                commentListBox.Enabled = true;
                             }
                             systemOutListBox.Items.Add("We are logged in as user: " + userListBox.SelectedItem);
                             systemOutListBox.Items.Add("Getting all posts and comments by " + userListBox.SelectedItem);
@@ -222,6 +241,7 @@ namespace BigBadBolts_Assign2
 
         public void LoadComments()
         {
+            commentListBox.Enabled = true;
             commentListBox.Items.Clear();//clear out anything that might have been in it before
             uint postIDToView = UInt32.Parse(HelperFunctions.getBetween((string)postListBox.SelectedItem, "<", ">"));
 
@@ -248,7 +268,10 @@ namespace BigBadBolts_Assign2
                 }
             }
             if (commentListBox.Items.Count == 0)
+            {
                 commentListBox.Items.Add("There are no comments to view.");
+                commentListBox.Enabled = false;
+            }
         }
 
         private void SubredditListBox_SelectedIndexChanged(object sender, EventArgs e)
