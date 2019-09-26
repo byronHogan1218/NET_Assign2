@@ -5,6 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+///*******************************************************************
+//*                                                                  *
+//*  CSCI 473-1/504-1       Assignment 2                Fall   2019  *
+//*                                                                  *
+//*                                                                  *
+//*  Program Name:  Reddit                                           *
+//*                                                                  *
+//*  Programmer:    Byron Hogan,  z1825194                           *
+//*                 Margaret Higginbotham, z1793581                  *
+//*                                                                  *
+//*******************************************************************/
+/**
+ * Pupose : This provides a definition of the Comment class
+ */
+
 namespace BigBadBolts_Assign2
 {
     /**
@@ -106,6 +121,7 @@ namespace BigBadBolts_Assign2
             }
 
         }
+        //this is used to create a new comment from passed in info
         public Comment(string _content, uint _authorID, uint _parentID)
         {
             commentID = ((uint)RedditForm.myComments.Count() + 1);

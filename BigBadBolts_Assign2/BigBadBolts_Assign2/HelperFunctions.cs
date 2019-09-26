@@ -6,6 +6,20 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
 
+///*******************************************************************
+//*                                                                  *
+//*  CSCI 473-1/504-1       Assignment 2                Fall   2019  *
+//*                                                                  *
+//*                                                                  *
+//*  Program Name:  Reddit                                           *
+//*                                                                  *
+//*  Programmer:    Byron Hogan,  z1825194                           *
+//*                 Margaret Higginbotham, z1793581                  *
+//*                                                                  *
+//*******************************************************************/
+/**
+ * Pupose : This provides reusable functions for the program
+ */
 
 namespace BigBadBolts_Assign2
 {
@@ -47,10 +61,15 @@ namespace BigBadBolts_Assign2
             return false;
         }
 
+         /**
+         * This is a helper function that can be called to get a string between two different points.
+         * Parameters: This takes a string as a source, and the two things to look for in that string
+         * Returns:   This will return the string located between the two strings
+         */
         public static string getBetween(string strSource, string strStart, string strEnd)
         {
             int Start, End;
-            if (strSource.Contains(strStart) && strSource.Contains(strEnd))
+            if (strSource.Contains(strStart) && strSource.Contains(strEnd))//Makes sure the string contains the delimiters
             {
                 Start = strSource.IndexOf(strStart, 0) + strStart.Length;
                 End = strSource.IndexOf(strEnd, Start);
@@ -189,7 +208,7 @@ namespace BigBadBolts_Assign2
 
                     List<string> moderating = new List<string>();
 
-                    for (int i = 7; i < tokens.Length; ++i)
+                    for (int i = 6; i < tokens.Length; ++i)
                     {
                         moderating.Add(tokens[i]);
                     }

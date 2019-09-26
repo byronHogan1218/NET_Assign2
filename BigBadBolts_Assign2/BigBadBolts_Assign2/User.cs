@@ -3,7 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+///*******************************************************************
+//*                                                                  *
+//*  CSCI 473-1/504-1       Assignment 2                Fall   2019  *
+//*                                                                  *
+//*                                                                  *
+//*  Program Name:  Reddit                                           *
+//*                                                                  *
+//*  Programmer:    Byron Hogan,  z1825194                           *
+//*                 Margaret Higginbotham, z1793581                  *
+//*                                                                  *
+//*******************************************************************/
+/**
+ * Pupose : This provides a definition of the User class
+ */
 namespace BigBadBolts_Assign2
 {
     /* The User class
@@ -17,7 +30,7 @@ namespace BigBadBolts_Assign2
         private string passwordHash;
         private int postScore;
         private int commonScore;
-        private List<uint> moderartingSubs = new List<uint>();
+        private List<string> moderartingSubs = new List<string>();
 
         //public versions
         public uint Id
@@ -25,6 +38,10 @@ namespace BigBadBolts_Assign2
             get { return id; }
         }
         
+        public List<string> ModeratingSubs
+        {
+            get { return moderartingSubs; }
+        }
 
         public int Type
         {
@@ -37,7 +54,7 @@ namespace BigBadBolts_Assign2
             set
             {
                 if (value.Length >= 5 && value.Length <= 21) ; //Added a semicolon
-                                                                //name = value;//This isnt working properly
+
             }
         }
 
@@ -81,13 +98,7 @@ namespace BigBadBolts_Assign2
             commonScore = conCommon;
             foreach (string subName in conModeratingSubNames) //check each name passed in to the existing subreddits
             {
-                foreach (Subreddit sub in RedditForm.mySubReddits) //checking against existing subreddits
-                {
-                    if (sub.Title == subName) // found the the subbreddit, add the id to the moderatingSubs
-                    {
-                        this.moderartingSubs.Add(sub.Id);
-                    }
-                }
+                this.moderartingSubs.Add(subName);
             }
         }
 
